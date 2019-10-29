@@ -1,0 +1,1511 @@
+<!--
+- Description: ACCEDE application form.
+- Author: Carlos Hernandez
+- Company: Quotanda
+- Email: carlos@quotanda.com
+- Created Date: 2019-10-11
+-->
+
+<aura:component >
+    <aura:attribute name="application" type="SObject" required="true"/>
+    <aura:attribute name="contactId" type="Id"/>
+    <aura:attribute name="describe" type="Map" required="true"/>
+    <aura:attribute name="params" type="Map" required="true"/>
+    <!-- <aura:attribute name="originationProcess" type="SObject" access="private" default="{}"/> -->
+    <aura:attribute name="applicationQueryTree" type="Map" default="{
+        LendingProduct__r: {
+            DocumentRules__r: [{
+                DocumentName__r: {}
+            }]
+        },
+        OriginationProcess__r:{
+            ScholarshipSettings__r: [{}]
+        },
+        Program__r: {
+            Name: '-'
+        },
+        School__r: {
+            Name: '-'
+        },
+        Account__r: {
+            Name: '-',
+            Parent: {
+                Name: '-'
+            },
+            LendingProductRelations__r: [{
+                Name: '-',
+                LendingProduct__r: {
+                    CurrencyIsoCode: '',
+                    DefaultTerm__c: 0
+                },
+                School__r: {
+                    Name: '-'
+                }
+            }]
+        },
+        Contact__r: {
+            AcademicHistory__r: [{}],
+            BankAccounts__r: [{}],
+            ContactRelations__r: [{
+                RelatedContact__r: {
+                    AcademicHistory__r: [{}],
+                    JobHistory__r: [{}]
+                }
+            }],
+            JobHistory__r: [{}],
+        },
+        ApplicationRelations__r: [{
+            Contact__r: {
+                AcademicHistory__r: [{}],
+                Balances__r: [{
+                    BalanceDetails__r: [{}]
+                }],
+                ContactRelations__r: [{
+                    RelatedContact__r: {
+                        AcademicHistory__r: [{}],
+                        JobHistory__r: [{}]
+                    }
+                }],
+                JobHistory__r: [{}],
+                RelatedContacts__r: [{}]
+            }
+        }],
+        BankAccounts__r: [{}],
+        CLContracts__r: [{
+            Name: '-'
+        }],
+        Documents__r: [{
+            DocumentRule__r: {
+                DocumentName__r: {}
+            },
+            Attachments: [{}]
+        }],
+        EstimationDetails__r: [{}],
+        PrequalificationsTEM__r: [{}]
+    }"/>
+    
+    <aura:attribute name="applicationUpsertTree" type="Map" default="{
+        Contact__r: {
+            AcademicHistory__r: [{}],
+            BankAccounts__r: [{}],
+            ContactRelations__r: [{
+                RelatedContact__r: {
+                    AcademicHistory__r: [{}],
+                    JobHistory__r: [{}]
+                }
+            }],
+            JobHistory__r: [{}]
+        },
+        ApplicationRelations__r: [{
+            Contact__r: {
+                AcademicHistory__r: [{}],
+                Balances__r: [{
+                    BalanceDetails__r: [{}]
+                }],
+                ContactRelations__r: [{
+                    RelatedContact__r: {
+                        AcademicHistory__r: [{}],
+                        JobHistory__r: [{}]
+                    }
+                }],
+                JobHistory__r: [{}]
+            }
+        }],
+        BankAccounts__r: [{}],
+        EstimationDetails__r: [{}],
+        PrequalificationsTEM__r: [{}]
+    }"/>
+    <aura:attribute name="describeSObjectTypes" type="String[]" default="['Attachment', 'Contact', 'AcademicHistory__c', 'Application__c', 'BalanceDetail__c', 'BankAccount__c', 'ContactRelation__c', 'Document__c', 'EstimationDetail__c', 'JobHistory__c', 'PrequalificationTEM__c', 'loan__Repayment_Schedule__c']"/>
+    
+    <!--ETIQUETAS INGLES-->
+    <aura:attribute name="en" type="Map" default="{
+        p1: 'I agree that my personal financial and patrimonial data are treated in accordance with the terms and conditions reported in this ',
+        p2: 'Privacy Statement',
+        p3: 'INTEGRAL PRIVACY NOTICE',
+        p4: '&lt;p>Quotanda is our digital partner, credit operator authorized by Accede and adheres to the same conditions of our privacy notice and management of your personal data according to the Federal Law on the Protection of Personal Data Held by Private Parties.&lt;/p>&lt;p>In compliance with the provisions of the Federal Law on the Protection of Personal Data Held by Individuals (LFPDPPP) QUOTANDA MÉXICO SAPI DE CV, provides the following Privacy Notice:&lt;/p>&lt;h3>Responsible for the protection and processing of your Personal Data&lt;/h3>&lt;p>QUOTANDA MÉXICO SAPI DE CV, hereinafter &quot;Quotanda&quot;, with address in The Pool, Goldsmith 40, Polanco, Miguel Hidalgo, CP 11550, Mexico City, Mexico.&lt;/p>&lt;h3>Means of obtaining Personal Data&lt;/h3>&lt;p>The personal data that Quotanda obtains from you will be used solely for the purposes described in this privacy notice. and may be collected directly, because you enter your data using the online services through the page www.quotanda.com.&lt;/p>&lt;h3>For what purposes we will use your personal data?&lt;/h3>&lt;p>Your personal data will be collected for the following main purposes that are necessary for the service you request:&lt;/p>&lt;ul>&lt;li>Create a Score to determine the approval or not of the credit application.&lt;/li>&lt;li>The granting of credits for studies.&lt;/li>&lt;/ul>&lt;p>Additionally, we will use your personal information for advertising, promotional purposes, as well as for the organization of events and contests. In case you do not want your data to be processed for these purposes, check the following box.&lt;/p>&lt;p>The refusal to use your personal data for these purposes may not be a reason for us to deny services and products that you request or contract with us.&lt;/p>&lt;h3>Personal data that will be processed&lt;/h3>&lt;p>To carry out the purposes described in this Privacy Notice, we will use the following personal identification data: full name, surnames, RFC, CURP, telephone number, signature, image, marital status, academic data, email address, age, nationality, employment data.&lt;/p>&lt;h3>Financial and patrimonial data&lt;/h3>&lt;p>In virtue of the professional services that Quotanda offers, and in order to guarantee the maximum efficiency and quality in the provision of the same, it is necessary to gather from our clients financial and patrimonial data, for which we will require your express consent. at the end of is I warn you.&lt;/p>&lt;h3>Sensitive personal data&lt;/h3>&lt;p>Quotanda does not collect sensitive personal data about its customers.&lt;/p>&lt;h3>Data transfer, national and international&lt;/h3>&lt;p>In virtue of what is stated in articles 36 and 37 of the LFPDPPP, your personal data may be transferred and/or shared to:&lt;/p>&lt;ol type=&quot;a&quot;>&lt;li>Holding companies, subsidiaries or affiliates under the common control of Quotanda to a parent company or any company of the same Quotanda group that operates under the same internal processes and policies.&lt;/li>&lt;li>When the transfer is necessary by virtue of a contract entered into or to be celebrated in interest of the owner, by the person in charge and a third party.&lt;/li>&lt;li>When the transfer is necessary for the maintenance or fulfillment of a legal relationship between the responsible party and the holder.&lt;/li>&lt;/ol>&lt;p>It is important to note that third parties to whom your personal data are transferred will be bound by the same terms as in the present Privacy Notice and comply with the corresponding security and confidentiality measures.&lt;/p>&lt;p>In any way, we promise not to transfer your personal information to third parties without your consent, except in the case of the provisions of article 37 of the LFPDPPP, as well as to carry out this transfer in the terms established by that Law.&lt;/p>&lt;h3>Exercise of the ARCO Rights&lt;/h3>&lt;p>Article 28 of the LFPDPPP, grants four rights to exercise:&lt;/p>&lt;ul>&lt;li>The owner is entitled to &lt;strong>&lt;em>Access&lt;/em>&lt;/strong> to their personal data held by the person in charge and to know the Privacy Notice.&lt;/li>&lt;li>The owner has the right to &lt;strong>&lt;em>Rectify&lt;/em>&lt;/strong> his or her data in case of incorrect, incorrect or outdated information.&lt;/li>&lt;li>The owner is entitled to&lt; &lt;strong>&lt;em>Cancel&lt;/em>&lt;/strong> your personal data when you consider that they are not being used for the fulfillment of the purposes established in this Privacy Notice.&lt;/li>&lt;li>The owner has the right to &lt;strong>&lt;em>Oppose&lt;/em>&lt;/strong> the treatment of their personal data regarding any of the purposes established in this Privacy Notice.&lt;/li>&lt;/ul>&lt;h3>Mechanisms for the exercise of ARCO Rights and Revocation of consent for the processing of their data&lt;/h3>&lt;p>To exercise their rights of Access, Rectification, Cancellation and Opposition or their right to revoke consent for treatment of your personal data, you must fill out and send the ARCO RIGHTS EXERCISE FORMAT, which you can download in the following link &lt;a href=&quot;https://quotanda.com/derechos-arco/&quot; target=&quot;_blank&quot;>https://quotanda.com/derechos-arco/&lt;/a>, which should be sent to Quotanda through the following email: &lt;a href=&quot;mailto:legal@quotanda.com&quot;>legal@quotanda.com&lt;/a>, or direct the format physically to the following address: The Pool, Goldsmith 40, Polanco, Miguel Hidalgo, CP 11550, Mexico City, Mexico, with attention to the Department of Protection of Personal Data, or you can submit your request in writing in Spanish and complying with the requirements set forth in article 89 of the LFPDPPP regulations. For more information, you can contact the Department of Personal Data Protection of Quotanda directly at: +525511638636.&lt;/p>&lt;p>For the origin of the exercise of your ARCO Rights you must prove the ownership of your ARCO rights or the representation with respect to the holder through the presentation of a copy of his identification document and the exhibition of the original for its comparison, or those instruments established in article 89 of the LFPDPPP regulation.&lt;/p>&lt;p>Quotanda will follow up to your request in a period of 20 working days from the reception of said format or request, with the complete documentation, to inform you about the origin of the same. If appropriate, Quotanda will have a maximum period of 15 working days to enforce its ARCO right.&lt;/p>&lt;h3>Right to revoke your consent for data processing&lt;/h3>&lt;p>Article 8 of the LFPDPPP provides for the possibility of revoking the consent granted for the processing of your personal data. To revoke it, you may request it using the same mechanism and procedure for the exercise of the ARCO Rights foreseen in this notice.&lt;/p>&lt;p>However, Quotanda informs you that keeping your personal data in your database will allow you to better understand your needs based on your history and thereby offer a better service for future reservations.&lt;/p>&lt;h3>Measures to protect your information and to limit the use or disclosure of your personal information&lt;/h3>&lt;p>Your personal information will be protected under strict confidentiality and to reasonably prevent the improper use or disclosure thereof, we have implemented physical, technical and administrative security measures in accordance with the Federal Law on Protection of Personal Data Held by Private Parties and other applicable regulations.&lt;/p>&lt;p>In particular, we have a privacy policy, training courses, restricted access to personal information only to authorized users, privacy officers, an inventory of personal data (properly classified by data category), of the systems of treatment, risk analysis and contractual clauses.&lt;/p>&lt;p>In order that you can limit the use and disclosure of your personal information, we offer you the option of registering in the Public Registry to avoid Advertising (REPEP)., which is in charge of the Consumer Federal Attorney’s Office, in order that their personal data are not used to receive advertising or promotions of companies of goods or services. For more information about this registry, you can consult the Internet portal of the &lt;a href=&quot;http://www.profeco.gob.mx/Servicios/REPEB.asp&quot; target=&quot;_blank&quot;>PROFECO&lt;/a>, or put on direct contact with this.&lt;/p>&lt;h3>Use of cookies&lt;/h3>&lt;p>We inform you that on our website we use cookies that only collect information on the browsing that users do anonymously, not treating personal data.&lt;/p>&lt;h3>Modifications to this privacy notice&lt;/h3>&lt;p>Quotanda may at any time make modifications or updates to this Privacy Notice.&lt;/p>&lt;p>Modifications or updates made, will come into force at the time they are published on the website &lt;a href=&quot;http://www.quotanda.com/&quot; target=&quot;_blank&quot;>www.quotanda.com&lt;/a> on their affiliated sites or in any medium of communication that you use to publish it, so its continuous review is recommended. If you do not expressly object to this notice and its updates, it is understood that you have given your tacit consent in terms of article 8 of the LFPDPPP.&lt;/p>&lt;h3>MANIFIESTO&lt;/h3>&lt;p>Manifesto under protest to tell the truth that the information provided in the present application is true and I affirm that I am legally responsible for the authenticity of it, assuming all type of responsibility derived from any statement.&lt;/p>',
+        s1: 'Personal Information',
+        s2: 'Current Address',
+        s3: 'Prequalification Form',
+        s4: 'Student',
+        s5: 'Co-signer',
+        s6: 'Co-debtor',
+        s7: 'Credit score (from Buró de Crédito)',
+        s8: 'Bank Account of the University (in case you have it)',
+        s9: 'Student Bank Account',
+        s10: 'Current Situation',
+        s11: 'Personal references',
+        s12: 'Information about the studies for which the loan is requested',
+        s13: 'Estimated Expenses MXN',
+        s14: 'Payment Sources MXN',
+        s15: 'Loan Calculation',
+        s16: 'Co-signer',
+        s17: 'Co-debtor',
+        s18: 'Current Level of Studies of the Applicant',
+        s19: 'Other professional and high school studies',
+        s20: 'Last Job',
+        s21: 'Last Job’s Reference',
+        s22: 'Other Previous Jobs',
+        s23: 'Associations to which you belong, altruistic or humanitarian activities that you develop or hobbies that you practice regularly',
+        s23a: 'Future Flow',
+        s23b: 'Future salary after the course',
+        s24: 'Father Information',
+        s25: 'Mother Information',
+        s26: 'Siblings',
+        s27: 'Professional Reference',
+        s28: 'Spouse Information',
+        s29: 'Spouse’s Last Job',
+        s30: 'Children',
+        s31: 'Personal Reference',
+        s32: 'Comments',
+        s33: 'Document Upload',
+        s34: 'Information of the ',
+        s35: 'Job Information',
+        s36: 'Assets / Properties',
+        s37: 'Liabilities / Credits',
+        s38: 'Customer declaration',
+        s39: 'Se entiende por Persona Políticamente Expuesta a 
+        &lt;p>(i) cualquier individuo que desempeña o ha
+        desempeñado en el último año alguna función pública destacada en un país extranjero o en
+        territorio nacional;&lt;/p>
+        &lt;p>(ii) los parientes de una Persona Políticamente Expuesta el cónyuge y las
+        territorio nacional; &lt;/p>
+        &lt;p>(ii) los parientes de una Persona Políticamente Expuesta el cónyuge y las
+        personas con las que mantenga parentesco consanguinidad o afinidad hasta el segundo grado,
+        incluyendo su cónyuge, concubino(a), abuelo(a), padre o madre, hijo(a), nieto(a), hermano(a),
+        suegro(a), así como 
+        &lt;p>(iii) cualquier individuo que mantiene vínculos patrimoniales (accionistas, socios
+        y asociados) con alguna Persona Políticamente Expuesta.&lt;/p>',
+        l1: 'Name(s)',
+        l2: 'Email',
+        l3: 'Mobile phone',
+        l4: 'School you plan to attend',
+        l5: 'Study program',
+        l6: 'Duration of the program (months)',
+        l7: 'Number of Disbursements',
+        l8: 'Payment Frequency',
+        l9: 'Cost',
+        l10: 'Amount',
+        l11: '*Accede lends you 60% of the cost of your tuition or up to $500,000.00 pesos.',
+        l12: 'Total expenses',
+        l13: 'Total income',
+        l14: 'You’ll still need',
+        l15: 'Occupation',
+        l16: 'Are you a shareholder in the company where you work?',
+        l17: 'Shares percentage',
+        l18: 'Name of the main partners of the company where you work (if you are a shareholder)',
+        l19: 'Place of Studies',
+        l20: 'Current Credits',
+        l21: 'Street',
+        l22: 'Number',
+        l23: 'Apartment Number',
+        l24: 'District',
+        l25: 'City',
+        l26: 'State/Province',
+        l27: 'Country',
+        l28: 'ZIP/Postal Code',
+        l29: 'View pre-payment plan',
+        l30: 'Go to Accede',
+        l31: 'Relationship with the borrower',
+        l32: 'Living Place Owned, Rented or Borrowed?',
+        l33: 'Years of Residence in Current Living Place',
+        l34: 'Occupation',
+        l35: 'Real Estate',
+        l36: 'Property Type',
+        l37: 'How did you know about us?',
+        l38: '¿Which educational program are you interested?',
+        l39: '¿Amount Required?',
+        l40: 'Executive',
+        l41: 'Use of Founds',
+        l42: 'Program Cost',
+        l43: 'Employee Status',
+        l44: 'Other Phone',
+        h1: 'An initial minimum deposit of $9,000.00 MXN is required.',
+        h2: 'Please indicate the phone of your parents residence.',
+        h3: 'Please indicate the address where your family (street, number, floor) lives.',
+        h4: 'Name / email / cell phone of two people &quot;not consanguineous relatives&quot; who have known you for more than 5 years.',
+        h5: 'Please enter the estimated expenses you will have during your studies.',
+        h6: 'Please enter the sources of income with which you will have to pay during your studies.',
+        h7: 'Institution / Program / End date / Degree title.',
+        h8: 'It’s a person who will support you and pay your credit in case you can not do it or default on your payment commitments. We suggest you be a close family member like your mom or dad, or an uncle or aunt.',
+        h9: 'It’s a person who together with you is obligated to pay the credit. It is the person that will surely help you pay your monthly payments while you are studying. We suggest that this person be your mom or your dad.',
+        h10: 'It’s the rating that the Buró de Crédito gives you based on your credit history, that is, based on the payment behavior of your credits. You can get it on the page http://www.burodecredito.com.mx/reporte-info.html.',
+        h11: 'It’s a document that specifies how much you will pay monthly by breaking down each concept from month 1 until you finish paying your credit.',
+        m1: 'Please type a 10 digit number.',
+        m2: 'Please select a past date.',
+        m3: 'Please select a future date.',
+        m4: 'Please type a valid email.',
+        q1: 'Are you between 24 and 50 years old?',
+        q2: 'Are you single?',
+        q3: 'Are you planning to get married in the next 18 months?',
+        q4: 'Do you have children?',
+        q5: 'Your Bachelor’s Degree, did you pay for them by yourself?',
+        q6: 'Do you live with your family?',
+        q7: 'Does your family own a home?',
+        q8: 'Have you lived in the same place for more than 3 years?',
+        q9: 'Do you own a car?',
+        q10: 'Have you worked at least 12 months in the last 2 years?',
+        q11: 'Within your major, did you achieve a final grade higher than 8.5?',
+        q12: 'Did you change your major at least once during college?',
+        q13: 'Did your stop your studies for at least one semester after high school?',
+        q14: 'Did you receive any recognition or honors in your major?',
+        q15: 'Will someone help you pay for your loan while you are studying?',
+        q16: 'Do you have any defaults listed on your credit score?',
+        q17: 'Have you been rejected for a loan in the last 12 months?',
+        q18: 'Have you ever been confronted by collections agency for a defaulted loan?',
+        q19: 'Have you been stopped for driving under the influence in the last 18 months?',
+        q20: 'Have you had traffic fines in the last 12 months?',
+        q21: 'Have you been admitted to the postgraduate degree you and planning to take, AND is included in the list indicated at the end of this form?',
+        q22: 'TenM may lend you up to $45,000 USD. Do you have the rest of the funds necessary?',
+        q23: 'Will your parents co-sign your loan?',
+        q24: 'Does your co-signer understand he will be jointly responsible for the loan and for the monthly payments?',
+        q25: 'Has your co-signer lived at the same address for over 5 years?',
+        q26: 'Has your co-signer worked at the same company for more than 5 years?',
+        q27: 'Does your co-signer own a home?',
+        q28: 'GuarantorHasPropertyInCDMX',
+        q29: 'Does your co-signer have any economically dependent children?',
+        q30: 'Has your co-signer had stable income for more than 3 years?',
+        q31: 'Is the annual salary of  your co-signer at least 4 times the size of the loan you are applying?',
+        q32: 'Is your co-signer stable and in good health?',
+        q33: 'Is your co-signer more than 30 years old and less than 65?',
+        q34: 'Is your co-signer willing to provide information to support your loan application?',
+        q35: 'Does your co-signer have a score above 700 points in his credit bureau report?',
+        q36: 'Does your co-signer have medical insurance for him and his family?',
+        q37: 'Does your co-debtor own a home?',
+        q38: 'JointObligorHasPropertyInCDMX__c',
+        q39: 'Does your co-debtor understand he is jointly responsible for the loan and shares responsibility for monthly payments?',
+        q40: 'Has your co-debtor been living at the same address for more than 5 years?',
+        q41: 'Has your co-debtor been working at the same company for more than 5 years?',
+        q42: 'Does your co-debtor have any economically dependent children?',
+        q43: 'Has your co-debtor had stable income for more than 3 years?',
+        q44: 'Is the annual salary of your co-debtor at least 3 times the size of the loan you are applying?',
+        q45: 'Is your co-debtor stable and in good health?',
+        q46: 'Is your co-debtor over 30 years old and less than 65?',
+        q47: 'Is your co-debtor willing to provide information in support your loan?',
+        q48: 'Does your co-debtor have a score above 700 points in his credit bureau report?',
+        q49: 'Does your co-debtor have medical insurance for him and his family?',
+                                                
+        q50: '¿Tienes entre 24 y 50 años?',
+        q51: '¿Eres soltero?',
+        q52: '¿Tienes hijos?',
+        q53: '¿Tienes un auto propio?',
+        q54: '¿Trabajaste en los últimos dos años al menos 12 meses?',
+        q55: '¿Recibiste algunos honores o reconocimientos en la carrera?',
+        q56: '¿Tienes a la persona que te va a apoyar con el pago del crédito mientras estudias el posgrado?',
+        q57: '¿Tienes créditos rechazados en los últimos 12 meses?',
+        q58: '¿El curso de posgrado al que ya has sido aprobado está incluido en alguna de la(s) lista(s) que se señalan en los siguientes links?',
+        q60: '¿El Obligado Solidario comprende que será corresponsable del pago del crédito que estás solicitando?',
+        q61: '¿El Obligado Solidario ha vivido en el mismo sitio por 4 años o más?',
+        q62: '¿El Obligado Solidario ha trabajado en la misma empresa por más de 5 años?',
+        q63: '¿El Obligado Solidario cuenta con una propiedad inmobiliaria libre de gravamen que se encuentra en la Zona Metropolitana de CDMX, Guadalajara, Monterrey o Querétaro?',
+        q64: '¿El Obligado Solidario tiene dependientes económicos que sean menores de edad?',
+        q65: '¿El Obligado Solidario tiene ingresos estables desde hace 3 años o más?',
+        q66: '¿El patrimonio del Obligado Solidario es al menos 5 veces mayor al crédito que estás solicitando?',
+        q67: '¿El estado de salud del Obligado Solidario es favorable y estable?',
+        q68: '¿La edad de tu Obligado Solidario se ubica entre 30 y 72 años?', 
+        q69: '¿El Obligado Solidario está dispuesto a proporcionarnos información para apoyar tu crédito?',
+        q70: '¿El Obligado Solidario tiene un reporte de Buró de Crédito con un puntaje superior a 730 puntos?',
+        q71: '¿El Obligado Solidario cuenta con un seguro de gastos médicos para él y su familia?',
+        q72: '¿Alguno de tus padres serán tu Obligado Solidario?',
+        q73: '¿Tu Reporte de Crédito actual muestra un puntaje superior a 700 puntos?',
+                                                
+        ta1: 'Hi! Seeking financing for your education? You’ve come to the right place!\nPlease submit your information below. All items are required and will help us to evaluate your application as quickly as possible.',
+        tb1: 'Congratulations!',
+        tb2: 'You finished the student loan pre-application process.\nPlease wait for our team to review the information in order to continue your application process.\nYou will receive an email notification regarding the status of your application soon.',
+        tc1: 'Congratulations {0}! You’ve been preliminarily approved for an education loan.&lt;br/>Complete the fields below and we will try to fully approve your loan. Items labeled with an asterisk (&lt;abbr class=&quot;slds-required&quot; title=&quot;{1}&quot;>*&lt;/abbr>) are required. If you’re not able to answer all questions now you can save (button at the bottom of the page) and return later to finish your application.&lt;br/>Your personal information will always be kept private and secure.',
+        td1: 'Application Submitted',
+        td2: 'Thank you for filling in all the information.\nYou will receive an email from Quotanda with further instructions\nin the next 48 hours.',
+        te1: 'Please upload the documents listed below [use the upload arrow button ↑]. Documents with &lt;abbr class=&quot;slds-required&quot; title=&quot;{0}&quot;>*&lt;/abbr> are required in order for us to complete your loan application.&lt;br/>Contact us at &lt;a href=&quot;mailto:support@quotanda.com&quot;>support@quotanda.com&lt;/a> if you have questions or are unable to produce one of the required forms.',
+        tf1: 'Application Documents Submitted',
+        tf2: 'Thank you for uploading the required documentation and completing the application process.\nQuotanda will get in touch with you in the next 48 hours.\nIf you need to contact us, feel free to write at support@quotanda.com.',
+        tg1: 'Contract sent',
+        tg2: 'Thank you for submitting all the required information.\nThe contract has been sent to your provided email address of {0}.\nIn order to continue with your process, please read and e-sign the document sent to you.',
+        th1: 'Loan application completed',
+        th2: 'Congratulations! You have successfully completed your loan application process.\nWe have created the loan account below for you.\nPlease, follow the link below if you want to review the detais further.',
+        ti1: 'We appreciate your interest in obtaining a loan through ',
+        ti2: 'Based upon the information we have received, it is not possible for us to generate a loan for you at this time.\nIf you have additional information which may assist us to reconsider this decision, please provide it within 5 days from the date of this letter.\nIf you would like a statement of specific reasons why your application was denied, please contact support@quotanda.com. We will provide you with a statement of reasons within 20 days after receiving your request.',
+        tj1: 'Application expired',
+        tj2: 'Your inaction has resulted in the withdrawal of your application.\nIf this withdrawal is in error, or if you need help completing your application, please contact us at support@quotanda.com.\nWe hope that you will think of us for any future education finance needs you may have.',
+        tk1: 'Your personal information will always be kept private and secure.',
+        tl1: 'Co-signer Documents Submitted',
+        tl2: 'Thank you for uploading the required documentation and completing the application process.\nIf you need to contact us, feel free to write at support@quotanda.com.',
+        df1: 'Single',
+        df2: 'Quarterly',
+        df3: 'Tri-annual',
+        df4: 'Bi-annual',
+        df5: 'Amnual',
+        df6: ' months',
+        ce1: 'Inscriptions and tuition',
+        ce2: 'Books and materials',
+        ce3: 'Accommodation / food',
+        ce4: 'Transportation and other basic',
+        ce5: 'Miscellaneous expenses',
+        ci1: 'Personal savings',
+        ci2: 'Family contribution',
+        ci3: 'Other scholarships (detail)',
+        ba1: 'Cash and liquid investments',
+        ba2: 'Movable property (furniture, jewelry, art)',
+        ba3: 'Automobiles',
+        ba4: 'Accounts receivable',
+        ba5: 'Other assets (memberships, rights, etc.)',
+        bl1: 'Total liabilities / credits',
+        bl2: 'Short-term bank credits (cards and cars)',
+        bl3: 'Mortgages and other long-term',
+        bl4: 'Taxes',
+        bl5: 'Accounts and liabilities payable',
+        bl6: 'Other liabilities'
+    }"/>
+
+    <!--ETIQUETAS ESPAÑOL-->
+    <aura:attribute name="es" type="Map" default="{
+        p1: 'Consiento que mis datos personales financieros y patrimoniales sean tratados de conformidad con los términos y condiciones informados en el presente ',
+        p2: 'Aviso de privacidad',
+        p3: 'AVISO DE PRIVACIDAD INTEGRAL',
+        p4: '&lt;p>Quotanda es nuestro socio digital operador de créditos autorizado por Accede y se apega a las mismas condiciones de nuestro aviso de privacidad y manejo de tus datos personales de acuerdo a la Ley Federal de Protección de Datos Personales en Posesión de Particulares.&lt;/p>En cumplimiento con lo establecido por la Ley Federal de Protección de Datos Personales en Posesión de Particulares (LFPDPPP) QUOTANDA MÉXICO S.A.P.I DE C.V., pone a su disposición el siguiente Aviso de Privacidad:&lt;/p>&lt;h3>Responsable de la protección y tratamiento de sus Datos Personales&lt;/h3>&lt;p>QUOTANDA MÉXICO S.A.P.I DE C.V., en lo sucesivo “Quotanda”, con domicilio en The Pool, Goldsmith 40, Polanco, Miguel Hidalgo, C.P. 11550, Ciudad de México, México.&lt;/p>&lt;h3>Medios de obtención de Datos Personales&lt;/h3>&lt;p>Los datos personales que Quotanda obtenga de usted, serán destinados únicamente para los fines descritos en el presente aviso de privacidad y podrán ser recabados de manera directa, porque usted ingresará sus datos utilizando los servicios en línea a través de la página www.quotanda.com.&lt;/p>&lt;h3>¿Para qué fines utilizaremos sus datos personales?&lt;/h3>&lt;p>Sus datos personales serán recabados para las siguientes finalidades principales que son necesarias para el servicio que solicita:&lt;/p>&lt;ul>&lt;li>Crear un Score para determinar la aprobación o no de la solicitud de crédito.&lt;/li>&lt;li>La concesión de créditos para los estudios.&lt;/li>&lt;/ul>&lt;p>De manera adicional, utilizaremos su información personal para fines publicitarios, promocionales, así como para la organización de eventos y concursos. En caso de que no desee que se traten sus datos para estos fines, marque la siguiente casilla.&lt;/p>&lt;p>La negativa para el uso de sus datos personales para estas finalidades no podrá ser un motivo para que le neguemos los servicios y productos que solicita o contrata con nosotros.&lt;/p>&lt;h3>Datos personales que se tratarán&lt;/h3>&lt;p>Para llevar a cabo las finalidades descritas en el presente Aviso de privacidad, utilizaremos los siguientes datos personales de identificación: nombre completo, apellidos, RFC, CURP, número de teléfono, firma, imagen, estado civil, datos académicos, correo electrónico, domicilio, edad, nacionalidad, datos laborales.&lt;/p>&lt;h3>Datos patrimoniales y financieros&lt;/h3>&lt;p>En virtud de los servicios profesionales que ofrece Quotanda, y con el fin de garantizar la máxima eficiencia y calidad en la prestación de los mismos, es necesario recabar de nuestros clientes datos financieros y patrimoniales, para lo que requeriremos de su consentimiento expreso al final de este aviso.&lt;/p>&lt;h3>Datos personales sensibles&lt;/h3>&lt;p>Quotanda no recaba datos personales sensibles respecto de sus clientes.&lt;/p>&lt;h3>Transferencia de datos, nacional e internacional&lt;/h3>&lt;p>En virtud de lo expuesto en los artículos 36 y 37 de la LFPDPPP sus datos personales podrán ser transferidos y/o compartidos a:&lt;/p>&lt;ol type=&quot;a&quot;>&lt;li>Sociedades controladoras, subsidiarias o afiliadas bajo el control común de Quotanda a una sociedad matriz o a cualquier sociedad del mismo grupo de Quotanda que opere bajo los mismos procesos y políticas internas.&lt;/li>&lt;li>Cuando la transferencia sea necesaria por virtud de un contrato celebrado o por celebrar en interés del titular, por el responsable y un tercero.&lt;/li>&lt;li>Cuando la transferencia sea precisa para el mantenimiento o cumplimiento de una relación jurídica entre el responsable y el titular.&lt;/li>&lt;/ol>&lt;p>Es importante señalar que los terceros a los que se transfieran sus datos personales se obligarán en los mismos términos del presente Aviso de Privacidad y cumplirán con las medidas de seguridad y confidencialidad correspondientes.&lt;/p>&lt;p>De cualquier manera, nos comprometemos a no transferir su información personal a terceros sin su consentimiento, salvo en el caso de lo previsto en el artículo 37 de la LFPDPPP, así como a realizar esta transferencia en los términos que fija esa Ley.&lt;/p>&lt;h3>Ejercicio de los Derechos ARCO&lt;/h3>&lt;p>El artículo 28 de la LFPDPPP, le otorga cuatro derechos a ejercer:&lt;/p>&lt;ul>&lt;li>El titular tiene derecho a &lt;strong>&lt;em>Acceder&lt;/em>&lt;/strong> a sus datos personales que obren en poder del responsable y a conocer el Aviso de Privacidad.&lt;/li>&lt;li>El titular tiene derecho a &lt;strong>&lt;em>Rectificar&lt;/em>&lt;/strong> sus datos en caso de serinexactos, incorrectos o estén desactualizados.&lt;/li>&lt;li>El titular tiene derecho a &lt;strong>&lt;em>Cancelar&lt;/em>&lt;/strong> sus datos personales cuando considere que no están siendo utilizados para el cumplimiento de los fines establecidos en el presente Aviso de Privacidad.&lt;/li>&lt;li>El titular tiene derecho a &lt;strong>&lt;em>Oponerse&lt;/em>&lt;/strong> al tratamiento de sus datospersonales respecto a alguno de los fines establecidos en el presente Aviso de Privacidad.&lt;/li>&lt;/ul>&lt;h3>Mecanismos para el ejercicio de los Derechos ARCO y Revocación del consentimiento para el tratamiento de sus datos&lt;/h3>&lt;p>Para ejercer sus derechos de Acceso, Rectificación, Cancelación y Oposición o su derecho a revocar el consentimiento para el tratamiento de sus datos personales, deberá llenar y enviar el FORMATO DE EJERCICIO DE DERECHOS ARCO, mismo que podrá descargar en el siguiente link &lt;a href=&quot;https://quotanda.com/derechos-arco/&quot; target=&quot;_blank&quot;>https://quotanda.com/derechos-arco/&lt;/a>, el cual deberá remitir a Quotanda a través del siguiente correo electrónico: &lt;a href=&quot;mailto:legal@quotanda.com&quot;>legal@quotanda.com&lt;/a>, o dirigir el formato físicamente a la siguiente dirección: The Pool, Goldsmith 40, Polanco, Miguel Hidalgo, C.P. 11550, Ciudad de México, México, con atención al Departamento de Protección de Datos Personales, o bien, podrá presentar su solicitud por escrito y en idioma español y cumpliendo con los requisitos señalados en el artículo 89 del reglamento de la LFPDPPP. Para mayor información podrá comunicarse directamente con el Departamento de Protección de Datos Personales de Quotanda al teléfono: +525511638636.&lt;/p>&lt;p>Para la procedencia del ejercicio de sus Derechos ARCO usted deberá acreditar la titularidad de sus derechos ARCO o bien la representación respecto al titular a través de la presentación de copia de su documento de identificación y la exhibición del original para su cotejo, o aquellos instrumentos establecidos en el artículo 89 del reglamento de la LFPDPPP.&lt;/p>&lt;p>Quotanda le dará seguimiento a su solicitud en un lapso de 20 días hábiles contados a partir de la recepción de dicho formato o solicitud, con la documentación completa, para comunicarle sobre la procedencia de la misma. En caso de resultar procedente, Quotanda contará con un plazo máximo de 15 días hábiles para hacer efectivo su derecho ARCO.&lt;/p>&lt;h3>Derecho de revocar su consentimiento para el tratamiento de datos&lt;/h3>&lt;p>El artículo 8 de La LFPDPPP, prevé la posibilidad de revocar el consentimiento otorgado para el tratamiento de sus datos personales. Para revocarlo, usted podrá solicitarlo utilizando el mismo mecanismo y procedimiento para el ejercicio de los Derechos ARCO previsto en el presente aviso.&lt;/p>&lt;p>Quotanda le informa que el mantener sus datos personales en su base de datos, le permitirá entender mejor sus necesidades con base a su historial y con ello ofrecerle mejores servicios en el futuro.&lt;/p>&lt;h3>Medidas para proteger su información y para limitar el uso o divulgación de su información personal&lt;/h3>&lt;p>Su información personal será resguardada bajo estricta confidencialidad y para prevenir razonablemente el uso o divulgación indebida de la misma, hemos implementado medidas de seguridad física, técnicas y administrativas de conformidad con la Ley Federal de Protección de Datos Personales en Posesión de los Particulares y demás normatividad aplicable.&lt;/p>&lt;p>En particular, contamos con una política de privacidad, cursos de capacitación, acceso restringido a información personal sólo a usuarios autorizados, oficiales de privacidad, un inventario de datos personales (debidamente clasificados por categoría de datos), de los sistemas de tratamiento, análisis de riesgos y cláusulas contractuales.&lt;/p>&lt;p>Con objeto de que usted pueda limitar el uso y divulgación de su información personal, le ofrecemos la opción de su inscripción en el Registro Público para evitar Publicidad (REPEP), que está a cargo de la Procuraduría Federal del Consumidor, con la finalidad de que sus datos personales no sean utilizados para recibir publicidad o promociones de empresas de bienes o servicios. Para mayor información sobre este registro, usted puede consultar el portal de Internet de la &lt;a href=&quot;http://www.profeco.gob.mx/Servicios/REPEB.asp&quot; target=&quot;_blank&quot;>PROFECO&lt;/a>, o bien ponerse en contacto directo con ésta.&lt;/p>&lt;h3>Uso de cookies&lt;/h3>&lt;p>Le informamos que en nuestra web utilizamos cookies que recogen únicamente información de la navegación que hacen los usuarios de forma anónima, no tratando así datos personales.&lt;/p>&lt;h3>Modificaciones al presente aviso de privacidad&lt;/h3>&lt;p>Quotanda podrá efectuar en cualquier momento modificaciones o actualizaciones al presente Aviso de Privacidad.&lt;/p>&lt;p>Las modificaciones o actualizaciones que se efectúen, entrarán en vigor en el momento en que son publicados en el sitio de internet &lt;a href=&quot;http://www.quotanda.com/&quot; target=&quot;_blank&quot;>www.quotanda.com&lt;/a> en sus sitios afiliados o en cualquier medio de comunicación que utilice para publicarlo, por lo que se recomienda su revisión continua. Si usted no se opone de manera expresa al presente aviso y sus actualizaciones, se da por entendido que ha otorgado su consentimiento tácito en términos del artículo 8 de la LFPDPPP.&lt;/p>&lt;h3>MANIFIESTO&lt;/h3>&lt;p>Manifiesto bajo protesta de decir verdad que la información proporcionada en la presente solicitud es veraz y afirmo que soy legalmente responsable de la autenticidad de la misma, asumiendo todo tipo de responsabilidad derivada de cualquier declaración.&lt;/p>',
+        s1: 'Información personal',
+        s2: 'Domicilio actual',
+        s3: 'Cuestionario de precalificación',
+        s4: 'Estudiante',
+        s5: 'Aval',
+        s6: 'Obligado solidario',
+        s7: 'Score de crédito (de Buró de Crédito)',
+        s8: 'Cuenta bancaria de la universidad (en caso de que se cuente con ella)',
+        s9: 'Cuenta bancaria del estudiante',
+        s10: 'Situación actual',
+        s11: 'Referencias personales',
+        s12: 'Información sobre los estudios para los que se solicita el crédito',
+        s13: 'Gastos estimados MXN',
+        s14: 'Fuentes de pago MXN',
+        s15: 'Cálculo del préstamo',
+        s16: 'Aval',
+        s17: 'Obligado solidario',
+        s18: 'Nivel actual de estudios del solicitante',
+        s19: 'Otros estudios profesionales y preparatoria',
+        s20: 'Último empleo',
+        s21: 'Referencia del último empleo',
+        s22: 'Otros empleos anteriores',
+        s23: 'Asociaciones a las que perteneces, actividades altruistas o humanitarias que desarrollas o aficiones que practicas con regularidad',
+        s23a: 'Flujo futuro',
+        s23b: 'Sueldo estimado mensual al terminar tus estudios',
+        s24: 'Información del padre',
+        s25: 'Información de la madre',
+        s26: 'Hermanos',
+        s27: 'Referencia profesional',
+        s28: 'Información del cónyuge',
+        s29: 'Información laboral del cónyuge',
+        s30: 'Hijos',
+        s31: 'Referencia personal',
+        s32: 'Comentarios',
+        s33: 'Cargar archivos',
+        s34: 'Información del ',
+        s35: 'Información laboral',
+        s36: 'Activos / Propiedades',
+        s37: 'Pasivos / Créditos',
+        s38: 'Declaración del cliente',
+        s39: 'Se entiende por Persona Políticamente Expuesta a 
+        &lt;p>(i) cualquier individuo que desempeña o ha
+        desempeñado en el último año alguna función pública destacada en un país extranjero o en
+        territorio nacional;&lt;/p>
+        &lt;p>(ii) los parientes de una Persona Políticamente Expuesta el cónyuge y las
+        territorio nacional; &lt;/p>
+        &lt;p>(ii) los parientes de una Persona Políticamente Expuesta el cónyuge y las
+        personas con las que mantenga parentesco consanguinidad o afinidad hasta el segundo grado,
+        incluyendo su cónyuge, concubino(a), abuelo(a), padre o madre, hijo(a), nieto(a), hermano(a),
+        suegro(a), así como 
+        &lt;p>(iii) cualquier individuo que mantiene vínculos patrimoniales (accionistas, socios
+        y asociados) con alguna Persona Políticamente Expuesta.&lt;/p>',
+        l1: 'Nombre(s)',
+        l2: 'Correo electrónico',
+        l3: 'Teléfono móvil',
+        l4: 'Escuela a la que deseas ingresar',
+        l5: 'Programa de estudio',
+        l6: 'Duración del programa (meses)',
+        l7: 'Número de pagos a la institución',
+        l8: 'Periodicidad de pagos a la institución',
+        l9: 'Costo',
+        l10: 'Monto',
+        l11: '*Accede te presta el 60% del costo de tu colegiatura o hasta $500,000.00 pesos.',
+        l12: 'Gasto total',
+        l13: 'Fuente de ingreso total',
+        l14: 'Aún necesitarías',
+        l15: 'Ocupación',
+        l16: '¿Eres accionista en la empresa donde trabajas?',
+        l17: 'Pocentaje accionario',
+        l18: 'Nombre de los socios principales de la empresa donde trabaja (si eres accionista)',
+        l19: 'Lugar de estudios',
+        l20: 'Créditos actuales',
+        l21: 'Calle',
+        l22: 'Número exterior',
+        l23: 'Número interior',
+        l24: 'Colonia',
+        l25: 'Ciudad',
+        l26: 'Estado/provincia',
+        l27: 'País',
+        l28: 'Código postal',
+        l29: 'Ver pre-plan de pagos',
+        l30: 'Ir a Accede',
+        l31: 'Relación con el acreditado',
+        l32: '¿Vivienda propia, rentada o prestada?',
+        l33: 'Años de residencia en la vivienda actual',
+        l34: 'Ocupación',
+        l35: 'Propiedades inmobiliarias',
+        l36: 'Tipo de propiedad',
+        l37: '¿Cómo te enteraste de nosotros?',
+        l38: '¿Qué tipo de programa educativo te interesa?',
+        l39: '¿Monto que buscas financiar?',
+        l40: 'Ejecutivo',
+        l41: 'Destino del Préstamo',
+        l42: 'Costo del Programa',
+        l43: 'Información Laboral',
+        l44: 'Otro Teléfono',
+        h1: 'Es necesario un depósito inicial mínimo de $9,000.00 MXN.',
+        h2: 'Número de teléfono de la casa de tus padres.',
+        h3: 'Por favor indique la dirección donde vive su familia (calle, número, escalera).',
+        h4: 'Nombre / email / celular de dos personas –no parientes consanguíneos- que te conozcan desde hace más de 5 años.',
+        h5: 'Favor de ingresar los gastos estimados que tendrás durante tus estudios.',
+        h6: 'Favor de ingresar las fuentes de ingresos con las que contarás para pagar durante tus estudios.',
+        h7: 'Institución / Programa / Fecha de terminación / grado alcanzado.',
+        h8: 'Es una persona que te respaldará y pagará tu crédito en caso de que tu no puedas hacerlo o incumplas en tus compromisos de pago. Te sugerimos que sea un familiar cercano como tu mamá o papá, o bien un tío o tía.',
+        h9: 'Es una persona que junto contigo se obliga a pagar el crédito. Es la persona que seguramente te ayudará a pagar tus mensualidades mientras estás estudiando. Te sugerimos que ésta persona sea tu mamá o tu papá.',
+        h10: 'Es la calificación que te brinda el Buró de Crédito en función de tu historial crediticio, es decir, en función del comportamiento de pago de tus créditos. Puedes obtenerlo en la página http://www.burodecredito.com.mx/reporte-info.html.',
+        h11: 'Es un documento que especifica cuánto pagarás mensualmente desglosando cada concepto desde el mes 1 hasta que termines de pagar tu crédito.',
+        m1: 'Por favor capture un número de 10 dígitos.',
+        m2: 'Por favor seleccione una fecha pasada.',
+        m3: 'Por favor seleccione una fecha futura.',
+        m4: 'Por favor capture un correo válido.',
+        q1: '¿Tienes entre 24 y 50 años?',
+        q2: '¿Eres soltero?',
+        q3: '¿Te piensas casar en los siguientes 18 meses?',
+        q4: '¿Tienes hijos?',
+        q5: '¿Tus estudios de licenciatura fueron pagados por ti, sin ayuda de tus padres?',
+        q6: '¿Vives con tus padres?',
+        q7: '¿Tu familia tiene casa propia?',
+        q8: '¿Llevas mas de tres años viviendo en el mismo sitio?',
+        q9: '¿Tienes un auto propio?',
+        q10: '¿Trabajaste en los últimos dos años al menos 12 meses?',
+        q11: 'En tu carrera profesional,¿obtuviste más de 8.5 de promedio global?',
+        q12: '¿Cambiaste de carrera al menos 1 vez durante tu licenciatura?',
+        q13: '¿Dejaste de estudiar por el menos un semestre a partir de la preparatoria?',
+        q14: '¿Recibiste algunos honores o reconocimientos en la carrera?',
+        q15: '¿Tienes quién te ayude a pagar el crédito mientras estudias?',
+        q16: '¿Has estado en buró de crédito por incumplimiento?',
+        q17: '¿Tienes créditos rechazados en los últimos 12 meses?',
+        q18: '¿Te han enviado cobradores por créditos incumplidos?',
+        q19: '¿Has estado retenido por el alcoholímetro en los últimos 18 meses?',
+        q20: '¿Has tenido multas de tránsito en los últimos 12 meses?',
+        q21: 'El posgrado que piensas estudiar y en el cuál has sido aprobado, ¿está incluido en la lista indicada al inicio de este formulario?',
+        q22: 'Accede podría prestarte hasta $45,000 USD. ¿Cuentas con el resto de los fondos necesarios?',
+        q23: '¿Tus padres serán tu Aval?',
+        q24: '¿Tu Aval entiende que asumirá los pagos mensuales y será corresponsable del crédito?',
+        q25: '¿Tu Aval vive en el mismo sitio desde hace más de 5 años?',
+        q26: '¿Tu Aval ha trabajado en la misma empresa por más de 5 años?',
+        q27: '¿Tu Aval cuenta con una propiedad inmobiliaria?',
+        q28: '¿Esta propiedad del Aval se encuentra en la Ciudad de México?',
+        q29: '¿Tu Aval tiene dependientes económicos que son menores de edad?',
+        q30: '¿Tu Aval tiene ingresos estables desde hace más de 3 años?',
+        q31: '¿El patrimonio de tu Aval es al menos 4 veces mayor al crédito que estás solicitando?',
+        q32: '¿El estado de salud de tu Aval es favorable y estable?',
+        q33: '¿Tu Aval tiene más de 30 y menos de 65 años?',
+        q34: '¿Tu Aval está dispuesto a proporcionar información para apoyar tu crédito?',
+        q35: '¿Tu Aval tiene un puntaje superior a 700 puntos en su reporte del Buró de Crédito?',
+        q36: '¿Tu Aval cuenta con un seguro de gastos médicos para él y su familia?',
+        q37: '¿El Obligado Solidario cuenta con una propiedad inmobiliaria?',
+        q38: '¿Esta propiedad del Obligado Solidario se encuentra en la Ciudad de México?',
+        q39: '¿El Obligado Solidario entiende que será corresponsable del crédito?',
+        q40: '¿El Obligado Solidario vive en el mismo sitio desde hace más de 5 años?',
+        q41: '¿El Obligado Solidario ha trabajado en la misma empresa por más de 5 años?',
+        q42: '¿El Obligado Solidario tiene hijos dependientes económicos menores de edad?',
+        q43: '¿El Obligado Solidario tiene ingresos estables desde hace más de 3 años?',
+        q44: '¿El patrimonio del Obligado Solidario es 3 veces mayor al crédito que estás solicitando?',
+        q45: '¿El estado de salud del Obligado Solidario es favorable y estable?',
+        q46: '¿El Obligado Solidario tiene más de 30 y menos de 65 años?',
+        q47: '¿El Obligado Solidario está dispuesto a proporcionar información para apoyar tu crédito?',
+        q48: '¿El Obligado Solidario tiene un puntaje superior a 700 puntos en su reporte del Buró de Crédito?',
+        q49: '¿El Obligado Solidario cuenta con un seguro de gastos médicos para él y su familia?',
+                                                
+        q50: '¿Tienes entre 24 y 50 años?',
+        q51: '¿Eres soltero?',
+        q52: '¿Tienes hijos?',
+        q53: '¿Tienes un auto propio?',
+        q54: '¿Trabajaste en los últimos dos años al menos 12 meses?',
+        q55: '¿Recibiste algunos honores o reconocimientos en la carrera?',
+        q56: '¿Tienes a la persona que te va a apoyar con el pago del crédito mientras estudias el posgrado?',
+        q57: '¿Tienes créditos rechazados en los últimos 12 meses?',
+        q58: '¿El curso de posgrado al que ya has sido aprobado está incluido en alguna de la(s) lista(s) que se señalan en los siguientes links?',
+        q59: 'Accede podría prestarte hasta Mx$500,000 o hasta el 70% del valor del programa, el valor que sea mayor. ¿Cuentas con el resto de los fondos necesarios para cubrir el resto de los costos en que vas a incurrir?', 
+        q60: '¿El Obligado Solidario comprende que será corresponsable del pago del crédito que estás solicitando?',
+        q61: '¿El Obligado Solidario ha vivido en el mismo sitio por 4 años o más?',
+        q62: '¿El Obligado Solidario ha trabajado en la misma empresa por más de 5 años?',
+        q63: '¿El Obligado Solidario cuenta con una propiedad inmobiliaria libre de gravamen que se encuentra en la Zona Metropolitana de CDMX, Guadalajara, Monterrey o Querétaro?',
+        q64: '¿El Obligado Solidario tiene dependientes económicos que sean menores de edad?',
+        q65: '¿El Obligado Solidario tiene ingresos estables desde hace 3 años o más?',
+        q66: '¿El patrimonio del Obligado Solidario es al menos 5 veces mayor al crédito que estás solicitando?',
+        q67: '¿El estado de salud del Obligado Solidario es favorable y estable?',
+        q68: '¿La edad de tu Obligado Solidario se ubica entre 30 y 72 años?', 
+        q69: '¿El Obligado Solidario está dispuesto a proporcionarnos información para apoyar tu crédito?',
+        q70: '¿El Obligado Solidario tiene un reporte de Buró de Crédito con un puntaje superior a 730 puntos?',
+        q71: '¿El Obligado Solidario cuenta con un seguro de gastos médicos para él y su familia?',
+        q72: '¿Alguno de tus padres serán tu Obligado Solidario?',
+        q73: '¿Tu Reporte de Crédito actual muestra un puntaje superior a 700 puntos?',
+        ta1: '¡Hola! ¿Buscas financiamiento para tu educación? ¡Has venido al lugar correcto!\nPor favor, completa los datos que se solicitan a continuación. Todos los campos son obligatorios y nos ayudarán a evaluar tu solicitud lo más rápido posible.',
+        tb1: '¡Felicidades!',
+        tb2: 'Has terminado el proceso de pre-aplicación para un préstamo de estudiante.\nPor favor, espera a que nuestro equipo revise tu información con el fin de continuar con tu proceso de aplicación.\nRecibirás una notificación por correo electrónico sobre el estado de tu solicitud a la brevedad.',
+        tc1: '¡Felicidades {0}! Has sido aprobado de manera preliminar para un préstamo de educación.&lt;br/>Completa los campos de abajo y nosotros trataremos de aprobar plenamente tu préstamo. Los campos marcados con un asterisco (&lt;abbr class=&quot;slds-required&quot; title=&quot;{1}&quot;>*&lt;/abbr>) son obligatorios. Si no puedes responder a todas las preguntas ahora, puedes guardar (botón en la parte inferior de la página) y volver más tarde para completar tu solicitud.&lt;br/>Tu información personal se mantendrá siempre privada y segura.',
+        td1: 'Solicitud enviada',
+        td2: 'Gracias por enviar la información.\nRecibirá un correo electrónico de Quotanda con instrucciones adicionales\nen las próximas 48 horas.',
+        te1: 'Por favor, carga todos los documentos que se indican a continuación [utiliza el botón de flecha ↑]. Los documentos con &lt;abbr class=&quot;slds-required&quot; title=&quot;{0}&quot;>*&lt;/abbr> serán obligatorios a fin de que podamos completar tu solicitud de préstamo.&lt;br/>Ponte en contacto con nosotros en &lt;a href=&quot;mailto:support@quotanda.com&quot;>support@quotanda.com&lt;/a> si tienes alguna pregunta o no puedes llenar uno de los formularios requeridos.',
+        tf1: 'Documentos de solicitud enviados',
+        tf2: 'Gracias por subir la documentación requerida y completar el proceso de solicitud.\nQuotanda se pondrá en contacto con usted en las próximas 48 horas.\nSi necesita ponerse en contacto con nosotros, no dude en escribir a support@quotanda.com.',
+        tg1: 'Contrato enviado',
+        tg2: 'Gracias por enviar la información requerida.\nEl contrato ha sido enviado a tu dirección de correo proporcionada de {0}.\nPara poder continuar con tu proceso, por favor lee y firma electrónicamente los documentos que te hemos enviado.',
+        th1: 'Solicitud de préstamo completada',
+        th2: '¡En hora buena! Has completado con tu proceso de apertura de préstamo.\nHemos creado para tí la cuenta de préstamo más abajo.\nPor favor, sigue el link siguiente para ver los detalles.',
+        ti1: 'Agradecemos tu interés en nuestro programa de financiamiento de tus estudios con ',
+        ti2: 'Con base en la información que nos has proporcionado y de acuerdo a nuestras políticas de crédito, te informamos que tu solicitud ha sido rechazada.\nSi tienes información adicional que nos ayude a reconsiderar nuestra decisión, por favor preséntala a nuestro equipo dentro de los siguientes 5 días hábiles a partir de la fecha de este mensaje.\nSi deseas saber las razones específicas por las que tu solicitud fue rechazada, por favor ponte en contacto con nosotros al correo support@quotanda.com. Dentro de un plazo de 20 días naturales después de recibir tu solicitud podemos proporcionarte los elementos que apoyaron nuestra decisión.',
+        tj1: 'Solicitud expirada',
+        tj2: 'Tu falta de acción ha dado lugar al vencimiento de tu aplicación.\nSi este vencimiento es por error, o si necesita ayuda para completar su solicitud, por favor contacta con nosotros mediante support@quotanda.com.\nEsperamos que pienses en nosotros como su opción para cualquier necesidad futura de financiamiento de tu educación.',
+        tk1: 'Tu información personal se mantendrá siempre privada y segura.',
+        tl1: 'Documentos de aval enviados',
+        tl2: 'Gracias por subir la documentación requerida y completar el proceso de solicitud.\nSi necesita ponerse en contacto con nosotros, no dude en escribir a support@quotanda.com.',
+        df1: 'Único',
+        df2: 'Trimestral',
+        df3: 'Cuatrimestral',
+        df4: 'Semestral',
+        df5: 'Anual',
+        df6: ' meses',
+        ce1: 'Inscripciones y colegiatura',
+        ce2: 'Libros y materiales',
+        ce3: 'Hospedaje/alimentación',
+        ce4: 'Transporte y otros básicos',
+        ce5: 'Gastos varios',
+        ci1: 'Ahorros personales',
+        ci2: 'Aportación familiar',
+        ci3: 'Otras becas (detallar)',
+        ba1: 'Efectivo e inversiones líquidas',
+        ba2: 'Bienes muebles (mobiliario, joyas, arte)',
+        ba3: 'Automóviles',
+        ba4: 'Cuentas por cobrar',
+        ba5: 'Otros bienes (membresías, derechos, etc.)',
+        bl1: 'Total pasivos/créditos',
+        bl2: 'Créditos bancarios de corto plazo (tarjetas y autos)',
+        bl3: 'Hipotecas y otros de largo plazo',
+        bl4: 'Impuestos',
+        bl5: 'Cuentas y obligaciones por pagar',
+        bl6: 'Otros pasivos'
+    }"/>
+
+    <aura:attribute name="label" type="Map" access="private" default="{!$Locale.language == 'es' ? v.es : v.en}"/>
+    <aura:handler name="change" value="{!v.describe}" action="{!c.init}"/>
+    <aura:handler name="change" value="{!v.params}" action="{!c.setTotals}"/>
+    <aura:handler event="c:SObjectTreeEvent" action="{!c.init}"/>
+
+
+    <aura:if isTrue="{!!or(empty(v.application.Account__c), empty(v.describe.Application__c), empty(v.params.accountLogoId))}">
+        
+        <c:AppHeader params="{!v.params}"/>
+
+        <section class="main">
+
+            <aura:if isTrue="{!and(!empty(v.application.Id), v.application.Contact__c == v.contactId)}">
+                <div class="studentPicklistPath">
+                    <lightning:picklistPath picklistFieldApiName="Status__c" recordId="{!v.application.Id}" onselect="{!c.navigateStatus}"/>
+                </div>
+            </aura:if>
+
+            <!--FORMULARIO CORTO-->
+            <aura:if isTrue="{!or(empty(v.application.Id), and(v.params.readOnly, v.application.Status__c == 'NEW - ENTERED'))}">
+                <p><lightning:formattedText value="{!v.label.ta1}"/></p>
+
+                <!--DATOS PERSONALES-->
+                <div class="section">
+
+                    <h2 class="slds-text-title_caps">{!v.label.s1}</h2>
+                    <!--Hola {!v.describe.Application__c.recordTypes.Lead}-->                    
+                    
+                    <lightning:input aura:id="f" value="{!v.application.Contact__r.FirstName}" label="{!v.label.l1}" name="firstName" disabled="{!!empty(v.application.Contact__c)}" maxlength="{!v.describe.Contact.fields.FirstName.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                    <lightning:input aura:id="f" value="{!v.application.Contact__r.PaternalSurname__c}" label="{!v.describe.Contact.fields.PaternalSurname__c.label}" name="paternalSurname" disabled="{!!empty(v.application.Contact__c)}" maxlength="{!v.describe.Contact.fields.PaternalSurname__c.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                    <lightning:input aura:id="f" value="{!v.application.Contact__r.MaternalSurname__c}" label="{!v.describe.Contact.fields.MaternalSurname__c.label}" name="maternalSurname" disabled="{!!empty(v.application.Contact__c)}" maxlength="{!v.describe.Contact.fields.MaternalSurname__c.length}" placeholder="{!$Label.c.Required}" required="true"/>                    
+
+                    <lightning:input aura:id="f" value="{!v.application.Contact__r.Source__c}" label="{!v.label.l37}" name="source" disabled="{!!empty(v.application.Contact__c)}" maxlength="{!v.describe.Contact.fields.Source__c.length}" placeholder="{!$Label.c.Required}" required="true"/>  
+                    <lightning:input aura:id="f" value="{!v.application.Contact__r.ContactNameSource__c}" label="{!v.label.l40}" name="contactNameSource" disabled="{!!empty(v.application.Contact__c)}" maxlength="{!v.describe.Contact.fields.ContactNameSource__c.length}" placeholder="{!$Label.c.Required}" required="true"/>  
+                                        
+                    <lightning:input aura:id="f" value="{!v.application.Contact__r.Email}" label="{!v.label.l2}" name="email" disabled="{!!empty(v.application.Contact__c)}" maxlength="{!v.describe.Contact.fields.Email.length}" placeholder="{!$Label.c.Required}" required="true" type="email" pattern="^[^@]+@[^@]+\.[a-zA-Z]{2,}$" messageWhenPatternMismatch="{!v.label.m4}"/>
+                    <lightning:input aura:id="f" value="{!v.application.Contact__r.MobilePhone}" label="{!v.label.l3}" name="mobilePhone" disabled="{!!empty(v.application.Contact__c)}" maxlength="{!v.describe.Contact.fields.MobilePhone.length}" placeholder="5510008888" required="true" type="tel" pattern="[0-9]{10}" messageWhenPatternMismatch="{!v.label.m1}"/>                   
+
+                    <lightning:select aura:id="f" value="{!v.application.InterestTopic__c}" label="{!v.label.l38}" name="interestTopic" disabled="{!v.params.readOnly}" required="true">
+                        <option value="" text="{!'-- '+$Label.c.Select+' --'}"/>
+                        <aura:iteration items="{!v.describe.Application__c.fields.InterestTopic__c.picklistValues}" var="picklistEntry">
+                            <option value="{!picklistEntry.value}" text="{!picklistEntry.label}"/>
+                        </aura:iteration>
+                    </lightning:select>
+                    
+                    <lightning:input aura:id="f" value="{!v.application.LoanAmount__c}" label="{!v.label.l39}" name="loanAmount" class="currency" formatter="currency" type="number" disabled="{!v.params.readOnly}" required="true"/>
+                
+                </div>
+            
+                <!--TERMINOS Y PRIVACIDAD-->
+                <div class="acceptPrivacyStatement">
+                    <lightning:input checked="{!v.application.Contact__r.PrivacyStatementCheck__c}" label=" " name="privacyStatementCheck" disabled="{!v.params.readOnly}" type="checkbox"/>
+                    <label class="slds-form-element__label">{!v.label.p1}<a onclick="{!c.togglePrivacyStatement}">{!v.label.p2}</a>.</label>
+                </div>
+
+                <!--BOTON SUBMIT-->
+                <div class="slds-text-align_center">
+                    <aura:if isTrue="{!!v.params.readOnly}">
+                        <lightning:button label="{!$Label.c.Submit}" value="NEW - ENTERED" disabled="{!!v.application.Contact__r.PrivacyStatementCheck__c}" variant="brand" onclick="{!c.submit}"/>
+                    </aura:if>
+                </div>
+
+                <!--FORMULARIO LARGO-->
+                <aura:set attribute="else">
+
+                    <!--SE HIZO SUBMIT EN FORMULARIO CORTO-->
+                    <aura:if isTrue="{!and(empty(v.contactId), !empty(v.application.Status__c), v.params.isSubmitted)}">
+                        <div class="fullSize slds-text-align_center">
+                            <h1 class="slds-text-heading_large slds-m-bottom_medium">{!v.label.tb1}</h1>
+                            <p class="slds-text-heading_medium"><lightning:formattedText value="{!v.label.tb2}"/></p>
+                            <lightning:button label="{!v.label.l30}" value="https://accedeeducacion.com/" class="slds-m-top_large" onclick="{!c.navigateToUrl}"/>
+                        </div>
+                    </aura:if>
+
+                    <aura:if isTrue="{!v.application.Contact__c == v.contactId}">
+
+                        <!--CELULAR NO VERIFICADO-->
+                        <aura:if isTrue="{!!v.application.Contact__r.Mobile_Is_Verified__c}">
+                            <c:PhoneVerification contact="{!v.application.Contact__r}" accountName="{!v.application.Account__r.Parent ? v.application.Account__r.Parent.Name : v.application.Account__r.Name}" describe="{!v.describe}"/>
+                            
+                            <!--FORMULARIO LARGO-->
+                            <aura:set attribute="else">
+
+                                <!--STATUS NEW - PRE APPROVED-->
+                                <aura:if isTrue="{!v.application.Status__c == 'NEW - PRE APPROVED'}">
+                                    <p><lightning:formattedRichText value="{!format(v.label.tc1, v.application.Contact__r.FirstName, $Label.c.Required)}"/></p>
+                                    
+                                    <!--DATOS PERSONALES APLICANTE-->
+                                    <div class="section">
+                                        <h2 class="slds-text-title_caps">{!v.label.s1}</h2>
+                                        
+                                        <!-- <lightning:input aura:id="f" value="{!v.application.Contact__r.FirstName}" label="{!v.label.l1}" name="firstName" disabled="true"/>
+                                        <lightning:input aura:id="f" value="{!v.application.Contact__r.LastName}" label="{!v.describe.Contact.fields.LastName.label}" name="lastName" disabled="true"/>                                                                                
+                                         -->
+
+                                        
+                                        <lightning:input aura:id="f" value="{!v.application.Contact__r.PaternalSurname__c}" label="{!v.describe.Contact.fields.PaternalSurname__c.label}" name="paternalSurname" disabled="{!!empty(v.application.Contact__c)}" maxlength="{!v.describe.Contact.fields.PaternalSurname__c.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                        <lightning:input aura:id="f" value="{!v.application.Contact__r.MaternalSurname__c}" label="{!v.describe.Contact.fields.MaternalSurname__c.label}" name="maternalSurname" disabled="{!!empty(v.application.Contact__c)}" maxlength="{!v.describe.Contact.fields.MaternalSurname__c.length}" placeholder="{!$Label.c.Required}" required="true"/>                    
+                                        <lightning:input aura:id="f" value="{!v.application.Contact__r.FirstName}" label="{!v.label.l1}" name="firstName" disabled="{!!empty(v.application.Contact__c)}" maxlength="{!v.describe.Contact.fields.FirstName.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                        
+                                        <lightning:input class="curp_field" aura:id="curpField" value="{!v.application.Contact__r.DocumentId__c}" pattern="^[a-zA-Z0-9_]*$" label="CURP" messageWhenPatternMismatch="CURP invalido" type="text" name="documentId" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.DocumentId__c.length}" placeholder="{!$Label.c.Required}" required="true"/>                                        
+                                        <lightning:input aura:id="f" value="{!v.application.Contact__r.Birthdate}" label="{!v.describe.Contact.fields.Birthdate.label}" name="birthdate" disabled="{!v.params.readOnly}" placeholder="{!$Label.c.Required}" required="true" type="date"/>                                                                                                                    
+                                        <lightning:radioGroup aura:id="f" value="{!v.application.Contact__r.Gender__c}" label="{!v.describe.Contact.fields.Gender__c.label}" name="gender" disabled="{!v.params.readOnly}" options="{!v.describe.Contact.fields.Gender__c.picklistValues}" required="true"/>
+                                                
+                                        <lightning:select aura:id="f" value="{!v.application.Contact__r.CivilStatus__c}" label="{!v.describe.Contact.fields.CivilStatus__c.label}" name="civilStatus" disabled="{!v.params.readOnly}" required="true">
+                                            <option value="" text="{!'-- '+$Label.c.Select+' --'}"/>
+                                            <aura:iteration items="{!v.describe.Contact.fields.CivilStatus__c.picklistValues}" var="picklistEntry">
+                                                <option value="{!picklistEntry.value}" text="{!picklistEntry.label}"/>
+                                            </aura:iteration>
+                                        </lightning:select>
+                                        
+                                        <lightning:input aura:id="f" value="{!v.application.Contact__r.Email}" label="{!v.label.l2}" name="email" disabled="true" type="email" required="true"/>
+                                        <lightning:input aura:id="f" value="{!v.application.Contact__r.MobilePhone}" label="{!v.label.l3}" name="mobilePhone" disabled="true" type="tel" pattern="[0-9]{10}" messageWhenPatternMismatch="{!v.label.m1}" required="true"/>
+                                        <lightning:input aura:id="f" value="{!v.application.Contact__r.OtherPhone}" label="{!v.label.l44}" name="otherPhone" type="tel" pattern="[0-9]{10}" messageWhenPatternMismatch="{!v.label.m1}"/>
+                                        
+                                        
+                                        <!-- <lightning:input aura:id="f" value="{!v.application.Contact__r.MailingStreet}" label="{!v.label.l21}" name="mailingStreet" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.MailingStreet.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                        <lightning:input aura:id="f" value="{!v.application.Contact__r.MailingNumber__c}" label="{!v.label.l22}" name="mailingNumber" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.MailingNumber__c.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                        <lightning:input aura:id="f" value="{!v.application.Contact__r.MailingApartmentNumber__c}" label="{!v.label.l23}" name="mailingApartmentNumber" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.MailingApartmentNumber__c.length}" placeholder="{!$Label.c.Optional}"/>
+                                        <lightning:input aura:id="f" value="{!v.application.Contact__r.MailingDistrict__c}" label="{!v.label.l24}" name="mailingDistrict" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.MailingDistrict__c.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                        <lightning:input aura:id="f" value="{!v.application.Contact__r.MailingCity}" label="{!v.label.l25}" name="mailingCity" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.MailingCity.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                        <lightning:input aura:id="f" value="{!v.application.Contact__r.MailingState}" label="{!v.label.l26}" name="mailingState" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.MailingState.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                        <lightning:select aura:id="f" value="{!v.application.Contact__r.MailingCountry}" label="{!v.label.l27}" name="mailingCountry" disabled="{!v.params.readOnly}" required="true">
+                                            <option value="" text="{!'- '+$Label.c.Select+' -'}"/>
+                                            <aura:iteration items="{!v.describe.Contact.fields.CarrierCountry__c.picklistValues}" var="picklistEntry">
+                                                <option value="{!picklistEntry.value}" text="{!picklistEntry.label}"/>
+                                            </aura:iteration>
+                                        </lightning:select>
+                                        <lightning:input aura:id="f" value="{!v.application.Contact__r.MailingPostalCode}" label="{!v.label.l28}" name="mailingPostalCode" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.MailingPostalCode.length}" pattern="[0-9]{5,}" placeholder="{!$Label.c.Required}" required="true"/>
+                                         -->
+                                        
+
+                                                                            
+                                    </div>        
+                                    
+
+                                    <!--DIRECCION-->
+                                    <div class="section">
+                                        <h2 class="slds-text-title_caps">Domicilio Actual</h2>
+                                        <lightning:input aura:id="f" value="{!v.application.Contact__r.MailingStreet}" label="{!v.label.l21}" name="mailingStreet" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.MailingStreet.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                        <lightning:input aura:id="f" value="{!v.application.Contact__r.MailingNumber__c}" label="{!v.label.l22}" name="mailingNumber" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.MailingNumber__c.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                        <lightning:input aura:id="f" value="{!v.application.Contact__r.MailingApartmentNumber__c}" label="{!v.label.l23}" name="mailingApartmentNumber" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.MailingApartmentNumber__c.length}" placeholder="{!$Label.c.Optional}"/>
+                                        <lightning:input aura:id="f" value="{!v.application.Contact__r.MailingDistrict__c}" label="{!v.label.l24}" name="mailingDistrict" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.MailingDistrict__c.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                        <lightning:input aura:id="f" value="{!v.application.Contact__r.MailingCity}" label="{!v.label.l25}" name="mailingCity" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.MailingCity.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                        <lightning:input aura:id="f" value="{!v.application.Contact__r.MailingState}" label="{!v.label.l26}" name="mailingState" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.MailingState.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                        <lightning:select aura:id="f" value="{!v.application.Contact__r.MailingCountry}" label="{!v.label.l27}" name="mailingCountry" disabled="{!v.params.readOnly}" required="true">
+                                            <option value="" text="{!'-- '+$Label.c.Select+' --'}"/>
+                                            <aura:iteration items="{!v.describe.Contact.fields.CarrierCountry__c.picklistValues}" var="picklistEntry">
+                                                <option value="{!picklistEntry.value}" text="{!picklistEntry.label}"/>
+                                            </aura:iteration>
+                                        </lightning:select>
+                                        <lightning:input aura:id="f" value="{!v.application.Contact__r.MailingPostalCode}" label="{!v.label.l28}" name="mailingPostalCode" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.MailingPostalCode.length}" pattern="[0-9]{5,}" placeholder="{!$Label.c.Required}" required="true"/>
+                                        
+                                        
+                                                                           
+                                    </div>    
+                                    
+                                    <!--SITUACION LABORAL-->
+                                    <div class="section">
+                                        <h2 class="slds-text-title_caps">{!v.label.l43}</h2>
+                                    
+                                        <lightning:select aura:id="f" value="{!v.application.Contact__r.EmploymentStatus__c}" label="{!v.describe.Contact.fields.EmploymentStatus__c.label}" name="employmentStatus" disabled="{!v.params.readOnly}" required="true">
+                                            
+                                            <aura:iteration items="{!v.describe.Contact.fields.EmploymentStatus__c.picklistValues}" var="picklistEntry">
+                                                <option value="{!picklistEntry.value}" text="{!picklistEntry.label}"/>
+                                            </aura:iteration>
+                                        </lightning:select>
+                                        
+                                        <aura:if isTrue="{!v.application.Contact__r.EmploymentStatus__c != 'Unemployed'}">
+                                                
+                                            <lightning:helptext content="{!v.describe.JobHistory__c.fields.Company__c.inlineHelpText}"/>
+                                            <lightning:input aura:id="f" value="{!v.application.Contact__r.JobHistory__r[0].Company__c}" label="{!v.describe.JobHistory__c.fields.Company__c.label}" name="studentJobHistoryCompany" disabled="{!v.params.readOnly}" maxlength="{!v.describe.JobHistory__c.fields.Company__c.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                                                                    
+                                            <lightning:helptext content="{!v.describe.JobHistory__c.fields.Website__c.inlineHelpText}"/>
+                                            <lightning:input aura:id="f" value="{!v.application.Contact__r.JobHistory__r[0].Website__c}" label="{!v.describe.JobHistory__c.fields.Website__c.label}" name="studentJobHistoryWebsite" disabled="{!v.params.readOnly}" maxlength="{!v.describe.JobHistory__c.fields.Website__c.length}" placeholder="{!$Label.c.Required}" required="true" type="url" onblur="{!c.onUrlBlur}"/>
+                                            
+                                            
+                                            <lightning:input aura:id="f" value="{!v.application.Contact__r.Phone}" label="{!v.describe.Contact.fields.Phone.label}" name="phone" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.Phone.length}" messageWhenPatternMismatch="{!v.label.m1}" pattern="[0-9]{10}" placeholder="5510008888" required="true" type="tel"/>                                        
+                                            
+                                            <lightning:helptext content="{!v.describe.JobHistory__c.fields.Position__c.inlineHelpText}"/>
+                                            <lightning:input aura:id="f" value="{!v.application.Contact__r.JobHistory__r[0].Position__c}" label="{!v.describe.JobHistory__c.fields.Position__c.label}" name="studentJobHistoryPosition" disabled="{!v.params.readOnly}" maxlength="{!v.describe.JobHistory__c.fields.Position__c.length}" placeholder="{!$Label.c.Required}" required="true"/>                                        
+                                            
+
+                                            <lightning:helptext content="Años en tu último empleo"/>
+                                            <lightning:input aura:id="f" value="{!v.application.Contact__r.JobHistory__r[0].YearsLastJob__c}" label="Antigüedad Laboral (años)" name="studentJobHistoryYearsLastJob" disabled="{!v.params.readOnly}" required="true" type="number" pattern="[0-9][0-9]" messageWhenPatternMismatch="Valor Inválido" />
+                                            
+
+                                            <!-- <lightning:helptext content="{!v.describe.JobHistory__c.fields.StartDate__c.inlineHelpText}"/>
+                                            <lightning:input aura:id="f" value="{!v.application.Contact__r.JobHistory__r[0].StartDate__c}" label="{!v.describe.JobHistory__c.fields.StartDate__c.label}" name="studentJobHistoryStartDate" disabled="{!v.params.readOnly}" placeholder="{!$Label.c.Required}" required="true" type="date" onchange="{!c.onPastDateChange}"/>
+                                            
+                                            <lightning:helptext content="{!v.describe.JobHistory__c.fields.EndDate__c.inlineHelpText}"/>
+                                            <lightning:input aura:id="f" value="{!v.application.Contact__r.JobHistory__r[0].EndDate__c}" label="{!v.describe.JobHistory__c.fields.EndDate__c.label}" name="studentJobHistoryEndDate" disabled="{!v.params.readOnly}" placeholder="{!$Label.c.Optional}" type="date"/>
+                                             -->
+                                            
+                                            <lightning:input aura:id="f" value="{!v.application.Contact__r.JobHistory__r[0].Salary__c}" label="{!v.describe.JobHistory__c.fields.Salary__c.label}" name="studentJobHistorySalary" disabled="{!v.params.readOnly}" formatter="currency" max="1e16" min="0" placeholder="{!$Label.c.Required}" required="true" step="any" type="number"/>
+                                            
+                                        </aura:if>
+                                    
+                                    </div>
+                                    
+                                   <!--REFERENCIA PERSONAL-->
+                                   <div class="section">
+                                        <h2 class="slds-text-title_caps">{!v.label.s11}
+                                            <lightning:helptext content="{!v.label.h4}"/>
+                                            <aura:if isTrue="{!!v.params.readOnly}">
+                                                <lightning:buttonIcon value="Personal Reference" alternativeText="{!$Label.c.Create}" iconName="utility:new" iconClass="newIcon" size="large" variant="bare" onclick="{!c.addContactRelation}"/>
+                                            </aura:if>
+                                        </h2>
+                                        <div class="relatedList">
+                                            <table>
+                                                <thead>
+                                                    <tr>
+                                                        <th><label class="slds-form-element__label"><abbr class="slds-required" title="{!$Label.c.Required}">*</abbr>{!v.label.l1}</label></th>
+                                                        <th><label class="slds-form-element__label"><abbr class="slds-required" title="{!$Label.c.Required}">*</abbr>{!v.describe.Contact.fields.LastName.label}</label></th>
+                                                        <th><label class="slds-form-element__label"><abbr class="slds-required" title="{!$Label.c.Required}">*</abbr>{!v.label.l2}</label></th>
+                                                        <th><label class="slds-form-element__label"><abbr class="slds-required" title="{!$Label.c.Required}">*</abbr>{!v.label.l3}</label></th>
+                                                        <th><label class="slds-form-element__label"><abbr class="slds-required" title="{!$Label.c.Required}">*</abbr>Referencia</label></th>
+                                                        <aura:if isTrue="{!!v.params.readOnly}">
+                                                            <th width="5%"><label class="slds-form-element__label">{!$Label.c.Action}</label></th>
+                                                        </aura:if>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <aura:iteration items="{!v.application.Contact__r.ContactRelations__r}" var="contactRelation" indexVar="index">
+                                                            <aura:if isTrue="{!contactRelation.Relationship__c == 'Personal Reference'}">
+                                                            <tr>
+                                                                <td><lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.FirstName}" label=" " name="personalReferenceFirstName" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.FirstName.length}" placeholder="{!$Label.c.Required}" required="true" onblur="{!c.rerender}"/></td>
+                                                                <td><lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.LastName}" label=" " name="personalReferenceLastName" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.LastName.length}" placeholder="{!$Label.c.Required}" required="true" onblur="{!c.rerender}"/></td>
+                                                                <td><lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.Email}" label=" " name="personalReferenceEmail" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.Email.length}" placeholder="{!$Label.c.Required}" required="true" type="email" onblur="{!c.rerender}"/></td>
+                                                                <td><lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.MobilePhone}" label=" " name="personalReferenceMobilePhone" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.MobilePhone.length}" messageWhenPatternMismatch="{!v.label.m1}" pattern="[0-9]{10}" placeholder="5510008888" required="true" type="tel" onblur="{!c.rerender}"/></td>
+                                                                
+                                                                <td></td>
+
+                                                                <aura:if isTrue="{!!v.params.readOnly}">
+                                                                    <td class="slds-text-align_center">
+                                                                        <aura:if isTrue="{!index >= 2}">
+                                                                            <lightning:buttonIcon value="{!index}" alternativeText="{!$Label.c.Delete}" iconName="utility:delete" iconClass="deleteIcon" variant="bare" onclick="{!c.removeContactRelation}"/>
+                                                                        </aura:if>
+                                                                    </td>
+                                                                </aura:if>
+                                                            </tr>
+                                                        </aura:if>
+                                                    </aura:iteration>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+
+                                    <!--INFORMACION DEL PROGRAMA DE CREDITO-->                                  
+                                    <div class="section">
+                                        <h2 class="slds-text-title_caps">{!v.label.s12}</h2>
+                                        <lightning:input aura:id="f" value="{!v.application.ProgramName__c}" label="{!v.label.l5}" name="programName" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Application__c.fields.ProgramName__c.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                          
+                                        <lightning:input aura:id="f" value="{!v.application.SchoolAddress__c}" label="{!v.describe.Application__c.fields.SchoolAddress__c.label}" name="schoolAddress" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Application__c.fields.SchoolAddress__c.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                        
+                                        <lightning:input aura:id="f" value="{!v.application.DurationProgram__c}" label="{!v.label.l6}" name="durationProgram" disabled="{!v.params.readOnly}" max="99" min="0" placeholder="{!$Label.c.Required}" required="true" type="number" onchange="{!c.setPaymentFrequency}"/>
+                                        
+                                        <!-- <lightning:input aura:id="f" value="{!v.application.NumberOfDisbursements__c}" label="{!v.label.l7}" name="numberOfDisbursements" disabled="{!v.params.readOnly}" max="99" min="0" placeholder="{!$Label.c.Required}" required="true" type="number" onchange="{!c.setPaymentFrequency}"/>                                        
+                                        <lightning:helptext content="{!v.describe.Application__c.fields.ExpectedStartDate__c.inlineHelpText}"/>
+                                        <lightning:input aura:id="f" value="{!v.application.ExpectedStartDate__c}" label="{!v.describe.Application__c.fields.ExpectedStartDate__c.label}" name="expectedStartDate" disabled="{!v.params.readOnly}" placeholder="{!$Label.c.Required}" required="true" type="date" onchange="{!c.onFutureDateChange}"/>                                         
+                                        <lightning:helptext content="{!v.describe.Application__c.fields.DesiredFundingDate__c.inlineHelpText}"/>
+                                        <lightning:input aura:id="f" value="{!v.application.DesiredFundingDate__c}" label="{!v.describe.Application__c.fields.DesiredFundingDate__c.label}" name="desiredFundingDate" disabled="{!v.params.readOnly}" placeholder="{!$Label.c.Required}" required="true" type="date" onchange="{!c.onFutureDateChange}"/>
+                                        -->
+
+                                        <lightning:select aura:id="f" value="{!v.application.InterestTopic__c}" label="{!v.label.l38}" name="interestTopic" disabled="true" required="true">
+                                            <option value="" text="{!'-- '+$Label.c.Select+' --'}"/>
+                                            <aura:iteration items="{!v.describe.Application__c.fields.InterestTopic__c.picklistValues}" var="picklistEntry">
+                                                <option value="{!picklistEntry.value}" text="{!picklistEntry.label}"/>
+                                            </aura:iteration>
+                                        </lightning:select>
+
+                                        
+                                        <lightning:input aura:id="f" value="{!v.application.ProgramCost__c}" label="{!v.describe.Application__c.fields.ProgramCost__c.label}" name="programCost" disabled="{!v.params.readOnly}" required="true" type="Decimal"/>
+                                        <lightning:input aura:id="f" value="{!v.application.DurationProgram__c}" label="{!v.label.l6}" name="durationProgram" disabled="{!v.params.readOnly}" max="99" min="0" placeholder="{!$Label.c.Required}" required="true" type="number" onchange="{!c.setPaymentFrequency}"/>
+                                        
+                                        <lightning:input aura:id="f" value="{!v.application.LoanAmount__c}" label="{!v.label.l39}" name="loanAmount" disabled="{!v.params.readOnly}" required="true" class="currency" formatter="currency" type="number" />
+
+                                        <lightning:radioGroup aura:id="f" value="{!v.application.UseOfFunds__c}" label="{!v.label.l41}" name="useOfFunds" disabled="{!v.params.readOnly}" options="{!v.describe.Application__c.fields.UseOfFunds__c.picklistValues}" required="true"/>
+                                           
+
+
+                                    </div>
+                                    
+                                    
+                                    <!--AVAL-->
+                                    <aura:iteration items="{!v.application.ApplcationRelations__r}" var="appRelation" indexVar="index">
+                                        <aura:if isTrue="{!index &lt; 2}">
+                                            <aura:if isTrue="{!index == 1}">
+                                                <div class="section">
+                                                    <h2 class="slds-text-title_caps">{!index == 0 ? v.label.s16 : v.label.s17}
+                                                        <lightning:helptext content="{!index == 0 ? v.label.h8 : v.label.h9}"/>
+                                                    </h2>
+                                                    <lightning:input aura:id="f" value="{!appRelation.Contact__r.FirstName}" label="{!v.label.l1}" name="applicationRelationFirstName" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.FirstName.length}" placeholder="{!$Label.c.Required}" required="true" onblur="{!c.rerender}"/>
+                                                    <lightning:input aura:id="f" value="{!appRelation.Contact__r.LastName}" label="{!v.describe.Contact.fields.LastName.label}" name="applicationRelationLastName" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.LastName.length}" placeholder="{!$Label.c.Required}" required="true" onblur="{!c.rerender}"/>
+                                                    <lightning:input aura:id="f" value="{!appRelation.Contact__r.Email}" label="{!v.describe.Contact.fields.Email.label}" name="applicationRelationEmail" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.Email.length}" placeholder="{!$Label.c.Required}" required="true" type="email" onblur="{!c.rerender}"/>
+                                                    <lightning:input aura:id="f" value="{!appRelation.Contact__r.MobilePhone}" label="{!v.label.l3}" name="applicationRelationMobilePhone" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.MobilePhone.length}" messageWhenPatternMismatch="{!v.label.m1}" pattern="[0-9]{10}" placeholder="5510008888" required="true" type="tel" onblur="{!c.rerender}"/>
+                                                    <lightning:select aura:id="f" value="{!v.appRelation.Contact__r.ContactRelations__r[0].Relationship__c}" label="{!v.label.co25}" name="relationshipCosigner" disabled="{!v.params.readOnly}" required="true" onchange="{!c.setContactRelations}">
+                                                        <option value="" text="{!'-- ' + $Label.c.Select + ' --'}"/>
+                                                        <aura:iteration items="{!v.describe.ContactRelation__c.fields.Relationship__c.picklistValues}" var="picklistEntry">
+                                                            <aura:iteration items="{!picklistEntry.validForPicklistValues}" var="validForPicklistEntry" indexVar="index">
+                                                                <aura:if isTrue="{!validForPicklistEntry.value == 'Co-signer'}">
+                                                                    <option value="{!picklistEntry.value}" text="{!picklistEntry.label}" selected="{!index == 0}"/>
+                                                                </aura:if>
+                                                            </aura:iteration>
+                                                        </aura:iteration> 
+                                                    </lightning:select>
+                                                </div>
+                                            </aura:if>
+                                        </aura:if>
+                                    </aura:iteration>
+                                    
+                                    <!--REFERIDOS-->
+                                    <aura:iteration items="{!v.application.Contact__r.ContactRelations__r}" var="contactRelation" indexVar="index">
+                                        <aura:if isTrue="{!index &lt; 2}">
+                                            <aura:if isTrue="{!index == 1}"><!-- we want see only codebtors -->
+                                                <div class="section">
+                                                    <h2 class="slds-text-title_caps">{!index == 0 ? v.label.s16 : v.label.s17}
+                                                        <lightning:helptext content="{!index == 0 ? v.label.h8 : v.label.h9}"/>
+                                                    </h2>
+                                                    <lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.FirstName}" label="{!v.label.l1}" name="applicationRelationFirstName" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.FirstName.length}" placeholder="{!$Label.c.Required}" required="true" onblur="{!c.rerender}"/>
+                                                    <lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.LastName}" label="{!v.describe.Contact.fields.LastName.label}" name="applicationRelationLastName" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.LastName.length}" placeholder="{!$Label.c.Required}" required="true" onblur="{!c.rerender}"/>
+                                                    <lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.Email}" label="{!v.describe.Contact.fields.Email.label}" name="applicationRelationEmail" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.Email.length}" placeholder="{!$Label.c.Required}" required="true" type="email" onblur="{!c.rerender}"/>
+                                                    <lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.MobilePhone}" label="{!v.label.l3}" name="applicationRelationMobilePhone" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.MobilePhone.length}" messageWhenPatternMismatch="{!v.label.m1}" pattern="[0-9]{10}" placeholder="5510008888" required="true" type="tel" onblur="{!c.rerender}"/>
+                                                    <lightning:select aura:id="f" value="{!contactRelation.Relationship__c}" label="{!v.describe.ContactRelation__c.fields.Relationship__c.label}" name="applicationRelationRelationship" disabled="{!v.params.readOnly}" required="true" onchange="{!c.setContactRelations}">
+                                                        <option value="" text="{!'-- '+$Label.c.Select+' --'}"/>
+                                                        <aura:iteration items="{!v.describe.ContactRelation__c.fields.Relationship__c.picklistValues}" var="picklistEntry">
+                                                            <aura:iteration items="{!picklistEntry.validForPicklistValues}" var="validForPicklistEntry" indexVar="index">
+                                                                <aura:if isTrue="{!validForPicklistEntry.value == 'Generic'}">
+                                                                    <option value="{!picklistEntry.value}" text="{!picklistEntry.label}" />
+                                                                </aura:if>
+                                                            </aura:iteration>
+                                                        </aura:iteration>
+                                                    </lightning:select>
+                                                </div>
+                                            </aura:if>
+                                        </aura:if>
+                                    </aura:iteration>
+
+                                    
+                                    <!--COMENTARIOS-->
+                                    <div class="section">
+                                        <h2 class="slds-text-title_caps">{!v.label.s32}</h2>
+                                        <lightning:textarea aura:id="f" value="{!v.application.Contact__r.Comments__c}" label="{!v.describe.Contact.fields.Comments__c.label}" name="comments" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.Comments__c.length}" placeholder="{!$Label.c.Optional}"/>
+                                    </div>
+
+                                    <!--DECLARACION DEL CLIENTE-->
+                                    <div class="section">
+
+                                        <h2 class="slds-text-title_caps">{!v.label.s38}</h2>
+                                        <label class="slds-form-element__label">
+                
+                                            Se entiende por persona políticamente expuesta a: 
+                                            <ul class="slds-list--dotted">
+                                                <li>Cualquier individuo que desempeña o ha desempeñado en el último año alguna función pública 
+                                                    destacada en un país extranjero o en territorio nacional.
+                                                </li>
+                                                <li>Los parientes de una persona políticamente expuesta el cónyuge y las
+                                                        territorio nacional.</li>
+                                                <li>Los parientes de una persona políticamente expuesta el cónyuge y las
+                                                        personas con las que mantenga parentesco consanguinidad o afinidad hasta el segundo grado,
+                                                        incluyendo su cónyuge, concubino(a), abuelo(a), padre o madre, hijo(a), nieto(a), hermano(a),
+                                                        suegro(a).</li>
+                                                <li>Cualquier individuo que mantiene vínculos patrimoniales (accionistas, socios
+                                                        y asociados) con alguna persona políticamente expuesta.</li>
+                                            </ul>
+
+                                        </label>
+
+
+                                        
+                                        
+                                        
+                                        <lightning:radioGroup 
+                                            value="{!v.application.Contact__r.PublicPersonType__c}" 
+                                            label="En atención a lo anterior, declaro: " 
+                                            name="publicPersonType" 
+                                            disabled="{!v.params.readOnly}" 
+                                            options="{!v.describe.Contact.fields.PublicPersonType__c.picklistValues}" 
+                                            required="true"/>
+
+
+                                        <aura:if isTrue="{!v.application.Contact__r.PublicPersonType__c == 'Ser o estar vinculado a una Persona Políticamente Expuesta.'}">                                        
+                                        
+                                            <h2 class="slds-text-title_caps">Agregue los datos de la persona políticamente expuesta aquí: 
+                                                <aura:if isTrue="{!!v.params.readOnly}">
+                                                    <lightning:buttonIcon value="Public Reference" alternativeText="{!$Label.c.Create}" iconName="utility:new" iconClass="newIcon" size="large" variant="bare" onclick="{!c.addContactPublic}"/>
+                                                </aura:if>
+                                            </h2>
+
+                                            <div class="relatedList">
+                                                <table>
+                                                    <thead>
+                                                        <tr>
+                                                            <th><label class="slds-form-element__label"><abbr class="slds-required" title="{!$Label.c.Required}">*</abbr>{!v.label.l1}</label></th>
+                                                            <th><label class="slds-form-element__label"><abbr class="slds-required" title="{!$Label.c.Required}">*</abbr>{!v.describe.Contact.fields.LastName.label}</label></th>
+                                                            <th><label class="slds-form-element__label"><abbr class="slds-required" title="{!$Label.c.Required}">*</abbr>{!v.describe.Contact.fields.ActualSchoolCompany__c.label}</label></th>
+                                                            <th><label class="slds-form-element__label"><abbr class="slds-required" title="{!$Label.c.Required}">*</abbr>{!v.label.l15}</label></th>
+                                                            <th><label class="slds-form-element__label"><abbr class="slds-required" title="{!$Label.c.Required}">*</abbr>Parentesco</label></th>
+
+                                                            <aura:if isTrue="{!!v.params.readOnly}">
+                                                                <th width="5%"><label class="slds-form-element__label">{!$Label.c.Action}</label></th>
+                                                            </aura:if>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <aura:iteration items="{!v.application.Contact__r.ContactRelations__r}" var="contactRelation" indexVar="index">
+                                                           
+                                                            <aura:if isTrue="{!contactRelation.RelationType__c == 'Public Reference'}">
+                                                                <tr>
+                                                                    <td><lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.FirstName}" label=" " name="siblingFirstName" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.FirstName.length}" placeholder="{!$Label.c.Required}" required="true" onblur="{!c.rerender}"/></td>
+                                                                    <td><lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.LastName}" label=" " name="siblingLastName" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.LastName.length}" placeholder="{!$Label.c.Required}" required="true" onblur="{!c.rerender}"/></td>                                                                    
+                                                                    <td><lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.ActualSchoolCompany__c}" label=" " name="siblingActualSchoolCompany" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.ActualSchoolCompany__c.length}" placeholder="{!$Label.c.Required}" required="true" onblur="{!c.rerender}"/></td>                                                                                                                                        
+                                                                    <td><lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.Title}" label=" " name="siblingTitle" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.Title.length}" placeholder="{!$Label.c.Required}" required="true" onblur="{!c.rerender}"/></td>                                                                    
+                                                                    
+                                                                    <td>
+                                                                        <lightning:select value="{!contactRelation.Relationship__c}" label="" name="relationship" disabled="{!v.params.readOnly}" required="true">                                                
+                                                                            <!-- <aura:iteration items="{!v.describe.ContactRelation__c.fields.Relationship__c.picklistValues}" var="picklistEntry">
+                                                                                <aura:if isTrue="{!picklistEntry.value == contactRelation.RelationType__c}">
+                                                                                    <option value="{!picklistEntry.value}" text="{!picklistEntry.label}"/>
+                                                                                </aura:if>
+                                                                            </aura:iteration> -->
+
+                                                                            <aura:iteration items="{!v.describe.ContactRelation__c.fields.Relationship__c.picklistValues}" var="picklistEntry">
+                                                                                <aura:iteration items="{!picklistEntry.validForPicklistValues}" var="validForPicklistEntry" indexVar="index">
+                                                                                    <aura:if isTrue="{!validForPicklistEntry.value == contactRelation.RelationType__c}">
+                                                                                        <option value="{!picklistEntry.value}" text="{!picklistEntry.label}" selected="{!index == 0}"/>
+                                                                                    </aura:if>
+                                                                                </aura:iteration>
+                                                                            </aura:iteration>
+
+
+                                                                        </lightning:select>
+                                                                    </td>  
+                                                                    
+                                                                    <aura:if isTrue="{!!v.params.readOnly}">
+                                                                        <td class="slds-text-align_center">
+                                                                            <aura:if isTrue="{!index >= 2}">
+                                                                                <lightning:buttonIcon value="{!index}" alternativeText="{!$Label.c.Delete}" iconName="utility:delete" iconClass="deleteIcon" variant="bare" onclick="{!c.removeContactRelation}"/>
+                                                                            </aura:if>
+                                                                        </td>
+                                                                    </aura:if>
+
+                                                                </tr>
+                                                            </aura:if>
+                                                        </aura:iteration>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </aura:if>
+
+                                        <br/>
+                                        
+
+                                        <div class="acceptPrivacyStatement">
+                                            
+                                            <label class="slds-form-element__label">
+                                                    <p>Adicionalmente manifiesto que:</p> 
+                                                <ul class="slds-list--ordered">
+                                                    <li>Al presentar esta solicitud toda mi información será para uso exclusivo del otorgamiento del crédito que aquí solicito
+                                                        y servicios análogos a la misma.</li>
+                                                    <li>Al firmar esta solicitud de crédito autorizo a que Accede Educación analice mi capacidad crediticia a través del
+                                                            análisis de datos personales, datos laborales y datos patrimoniales.</li>
+                                                    <li>Conozco la mecánica para el otorgamiento, disposición y pago del Crédito, así
+                                                            como para el pago de la colegiatura e inscripción [gastos de manutención], según el Contrato de Crédito Simple con Destino, que en caso de obtener el
+                                                            Crédito, suscribiré con Accede.</li>
+                                                    <li>En caso de requerir de Obligados Solidarios y/o cualquier otro tipo de garantías adicionales, me comprometo a
+                                                            integrar toda la información y/o documentación requerida por Accede Educación, para que Accede Educación pueda determinar conforme a sus
+                                                            criterios de evaluación si cuentan con la capacidad financiera y moral para garantizar el crédito que por este medio solicito.</li>
+                                                </ul>
+                                            
+                                                    <p>Aseguro a Accede Educación, S. de R.L. de C.V. la
+                                                        veracidad de los datos que en esta solicitud proporciono y
+                                                        tomo conocimiento de que cualquier omisión o falsedad de
+                                                        los mismos causará la cancelación automática de este
+                                                        trámite, obligándome a cubrir los gastos que se hubieren
+                                                        generado.</p>
+
+                                            </label>
+                                            <lightning:input checked="{!v.application.Contact__r.PrivacyStatementCheck__c}" label="Acepto el manifiesto." name="privacyStatementCheck" disabled="{!v.params.readOnly}" type="checkbox"/>
+                                            
+                                        </div>
+
+                                    </div>
+                                    
+                                    <!--SAVE Y SUBMIT-->
+                                    <aura:if isTrue="{!!v.params.readOnly}">
+                                        <div class="slds-text-align_center">
+                                            <lightning:button label="{!$Label.c.Save}" onclick="{!c.save}"/>
+                                            <lightning:button label="{!$Label.c.Submit}" value="NEW - IN REVIEW" variant="brand" onclick="{!c.submit}"/>
+                                        </div>
+                                    </aura:if>
+
+                                </aura:if>
+
+                                <!--STATUS NEW - IN REVIEW-->
+                                <aura:if isTrue="{!v.application.Status__c == 'NEW - IN REVIEW'}">
+                                    <div class="fullSize slds-text-align_center">
+                                        <h1 class="slds-text-heading_large slds-m-bottom_medium">{!v.label.td1}</h1>
+                                        <p class="slds-text-heading_medium"><lightning:formattedText value="{!v.label.td2}" linkify="true"/></p>
+                                        <lightning:button label="{!v.label.l30}" value="https://accedeeducacion.com/" class="slds-m-top_large" onclick="{!c.navigateToUrl}"/>
+                                    </div>
+                                </aura:if>
+
+                                <!--STATUS APPROVED - APPROVED-->
+                                <aura:if isTrue="{!v.application.Status__c == 'APPROVED - APPROVED'}">
+                                    <p class="fullSize"><lightning:formattedRichText value="{!format(v.label.te1, $Label.c.Required)}"/></p>
+                                    <div class="section fullSize">
+                                        <h2 class="slds-text-title_caps">{!v.label.s33}</h2>
+                                        <c:ApplicationDocuments application="{!v.application}" contactId="{!v.contactId}" describe="{!v.describe}" params="{!v.params}" readOnly="{!v.params.readOnly}" role="Student"/>
+                                    </div>
+                                    <aura:if isTrue="{!!v.params.readOnly}">
+                                        <div class="slds-text-align_center">
+                                            <lightning:button aura:id="submit" label="{!$Label.c.Submit}" value="APPROVED - DOCUMENT CHECK" variant="brand" onclick="{!c.submit}"/>
+                                        </div>
+                                    </aura:if>
+                                </aura:if>
+
+                                <!--STATUS APPROVED - DOCUMENT CHECK-->
+                                <aura:if isTrue="{!v.application.Status__c == 'APPROVED - DOCUMENT CHECK'}">
+                                    <div class="fullSize slds-text-align_center">
+                                        <h1 class="slds-text-heading_large slds-m-bottom_medium">{!v.label.tf1}</h1>
+                                        <p class="slds-text-heading_medium"><lightning:formattedText value="{!v.label.tf2}" linkify="true"/></p>
+                                    </div>
+                                </aura:if>
+
+                                <!--STATUS APPROVED - CONTRACT SIGNATURE REQUEST-->
+                                <aura:if isTrue="{!v.application.Status__c == 'APPROVED - CONTRACT SIGNATURE REQUEST'}">
+                                    <div class="fullSize slds-text-align_center">
+                                        <h1 class="slds-text-heading_large slds-m-bottom_medium">{!v.label.tg1}</h1>
+                                        <p class="slds-text-heading_medium"><lightning:formattedText value="{!format(v.label.tg2, v.application.Contact__r.Email)}"/></p>
+                                    </div>
+                                </aura:if>
+
+                                <!--STATUS APPROVED - CONVERTED TO CONTRACT-->
+                                <aura:if isTrue="{!v.application.Status__c == 'APPROVED - CONVERTED TO CONTRACT'}">
+                                    <div class="fullSize slds-text-align_center">
+                                        <h1 class="slds-text-heading_large slds-m-bottom_medium">{!v.label.th1}</h1>
+                                        <p class="slds-text-heading_medium"><lightning:formattedText value="{!v.label.th2}"/></p>
+                                        <lightning:button label="{!v.application.CLContracts__r[0].Name}" value="{!'contactId='+v.application.Contact__c+'&amp;loanAccountId='+v.application.CLContracts__r[0].Id+'#applicationDetail'}" class="slds-m-top_medium slds-text-heading_medium" variant="base" onclick="{!c.navigateToUrl}"/>
+                                    </div>
+                                </aura:if>
+
+                                <!--STATUS REJECTED-->
+                                <aura:if isTrue="{!v.application.Status__c == 'CANCELED' || v.application.Status__c == 'REJECTED'}">
+                                    <div class="fullSize slds-text-align_center">
+                                        <h1 class="slds-text-heading_large slds-m-bottom_medium">{!v.label.ti1}{!empty(v.application.Account__r.ParentId) ? v.application.Account__r.Name : v.application.Account__r.Parent.Name}</h1>
+                                        <p class="slds-text-heading_medium"><lightning:formattedText value="{!v.label.ti2}" linkify="true"/></p>
+                                    </div>
+                                </aura:if>
+
+                                <!--STATUS EXPIRED-->
+                                <aura:if isTrue="{!v.application.Status__c == 'EXPIRED'}">
+                                    <div class="fullSize slds-text-align_center">
+                                        <h1 class="slds-text-heading_large slds-m-bottom_medium">{!v.label.tj1}</h1>
+                                        <p class="slds-text-heading_medium"><lightning:formattedText value="{!v.label.tj2}" linkify="true"/></p>
+                                    </div>
+                                </aura:if>
+
+                            </aura:set>
+                        </aura:if>
+                        
+                        <!--Celular Verificado-->
+                        <aura:set attribute="else">
+                            <aura:iteration items="{!v.application.ApplicationRelations__r}" var="applicationRelation">
+                                <aura:if isTrue="{!applicationRelation.Contact__c == v.contactId}">
+                                    <aura:if isTrue="{!and(applicationRelation.Contact__c == v.contactId, v.params.isSubmitted != true)}">
+                                        <lightning:picklistPath picklistFieldApiName="Status__c" recordId="{!v.application.Id}" variant="non-linear" onselect="{!c.navigateStatusCosigner}"/>
+                                        <aura:if isTrue="{!!applicationRelation.Contact__r.Mobile_Is_Verified__c}">
+                                            <c:PhoneVerification contact="{!applicationRelation.Contact__r}" accountName="{!v.application.Account__r.Parent ? v.application.Account__r.Parent.Name : v.application.Account__r.Name}" describe="{!v.describe}"/>
+                                            <aura:set attribute="else">
+                                                <aura:if isTrue="{!applicationRelation.Contact__r.IsDataSubmitted__c == false}">
+                                                    <p><lightning:formattedText value="{!v.label.tk1}"/></p>
+                                                    <div class="section">
+                                                        <h2 class="slds-text-title_caps">{!v.label.s34+(applicationRelation.Type__c == 'Co-signer' ? v.label.s5 : v.label.s6)}</h2>
+                                                        <lightning:input aura:id="f" value="{!applicationRelation.Contact__r.FirstName}" label="{!v.label.l1}" name="cosignerFirstName" disabled="true"/>
+                                                        <lightning:input aura:id="f" value="{!applicationRelation.Contact__r.LastName}" label="{!v.describe.Contact.fields.LastName.label}" name="cosignerLastName" disabled="true"/>
+                                                        <lightning:radioGroup aura:id="f" value="{!applicationRelation.Contact__r.Gender__c}" label="{!v.describe.Contact.fields.Gender__c.label}" name="cosignerGender" disabled="{!v.params.readOnly}" options="{!v.describe.Contact.fields.Gender__c.picklistValues}" required="true"/>
+                                                        <lightning:input aura:id="f" value="{!applicationRelation.Contact__r.Birthdate}" label="{!v.describe.Contact.fields.Birthdate.label}" name="cosignerBirthdate" disabled="{!v.params.readOnly}" placeholder="{!$Label.c.Required}" required="true" type="date" onchange="{!c.onPastDateChange}"/>
+                                                        <lightning:select aura:id="f" value="{!applicationRelation.Contact__r.CountryOfBirth__c}" label="{!v.describe.Contact.fields.CountryOfBirth__c.label}" name="cosignerCountryOfBirth" disabled="{!v.params.readOnly}" required="true">
+                                                            <option value="" text="{!'-- '+$Label.c.Select+' --'}"/>
+                                                            <aura:iteration items="{!v.describe.Contact.fields.CountryOfBirth__c.picklistValues}" var="picklistEntry">
+                                                                <option value="{!picklistEntry.value}" text="{!picklistEntry.label}"/>
+                                                            </aura:iteration>
+                                                        </lightning:select>
+                                                        <lightning:select aura:id="f" value="{!applicationRelation.Contact__r.Nationality__c}" label="{!v.describe.Contact.fields.Nationality__c.label}" name="cosignerNationality" disabled="{!v.params.readOnly}" required="true">
+                                                            <option value="" text="{!'-- '+$Label.c.Select+' --'}"/>
+                                                            <aura:iteration items="{!v.describe.Contact.fields.Nationality__c.picklistValues}" var="picklistEntry">
+                                                                <option value="{!picklistEntry.value}" text="{!picklistEntry.label}"/>
+                                                            </aura:iteration>
+                                                        </lightning:select>
+                                                        <lightning:select aura:id="f" value="{!applicationRelation.Contact__r.CivilStatus__c}" label="{!v.describe.Contact.fields.CivilStatus__c.label}" name="cosignerCivilStatus" disabled="{!v.params.readOnly}" required="true" onchange="{!c.onCosignerCivilStatusChange}">
+                                                            <option value="" text="{!'-- '+$Label.c.Select+' --'}"/>
+                                                            <aura:iteration items="{!v.describe.Contact.fields.CivilStatus__c.picklistValues}" var="picklistEntry">
+                                                                <option value="{!picklistEntry.value}" text="{!picklistEntry.label}"/>
+                                                            </aura:iteration>
+                                                        </lightning:select>
+                                                        <aura:if isTrue="{!applicationRelation.Contact__r.CivilStatus__c == 'Married'}">
+                                                            <lightning:helptext content="{!v.describe.Contact.fields.MatrimonialRegime__c.inlineHelpText}"/>
+                                                            <lightning:select aura:id="f" value="{!applicationRelation.Contact__r.MatrimonialRegime__c}" label="{!v.describe.Contact.fields.MatrimonialRegime__c.label}" name="cosignerMatrimonialRegime" disabled="{!v.params.readOnly}" required="true">
+                                                                <option value="" text="{!'-- '+$Label.c.Select+' --'}"/>
+                                                                <aura:iteration items="{!v.describe.Contact.fields.MatrimonialRegime__c.picklistValues}" var="picklistEntry">
+                                                                    <option value="{!picklistEntry.value}" text="{!picklistEntry.label}"/>
+                                                                </aura:iteration>
+                                                            </lightning:select>
+                                                        </aura:if>
+                                                        <lightning:input aura:id="f" value="{!applicationRelation.Contact__r.MailingStreet}" label="{!v.label.l21}" name="cosignerMailingStreet" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.MailingStreet.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                                        <lightning:input aura:id="f" value="{!applicationRelation.Contact__r.MailingNumber__c}" label="{!v.label.l22}" name="cosignerMailingNumber" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.MailingNumber__c.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                                        <lightning:input aura:id="f" value="{!applicationRelation.Contact__r.MailingApartmentNumber__c}" label="{!v.label.l23}" name="cosignerMailingApartmentNumber" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.MailingApartmentNumber__c.length}" placeholder="{!$Label.c.Optional}"/>
+                                                        <lightning:input aura:id="f" value="{!applicationRelation.Contact__r.MailingDistrict__c}" label="{!v.label.l24}" name="cosignerMailingDistrict" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.MailingDistrict__c.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                                        <lightning:input aura:id="f" value="{!applicationRelation.Contact__r.MailingCity}" label="{!v.label.l25}" name="cosignerMailingCity" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.MailingCity.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                                        <lightning:input aura:id="f" value="{!applicationRelation.Contact__r.MailingState}" label="{!v.label.l26}" name="cosignerMailingState" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.MailingState.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                                        <lightning:select aura:id="f" value="{!applicationRelation.Contact__r.MailingCountry}" label="{!v.label.l27}" name="cosignerMailingCountry" disabled="{!v.params.readOnly}" required="true">
+                                                            <option value="" text="{!'-- '+$Label.c.Select+' --'}"/>
+                                                            <aura:iteration items="{!v.describe.Contact.fields.CarrierCountry__c.picklistValues}" var="picklistEntry">
+                                                                <option value="{!picklistEntry.value}" text="{!picklistEntry.label}"/>
+                                                            </aura:iteration>
+                                                        </lightning:select>
+                                                        <lightning:input aura:id="f" value="{!applicationRelation.Contact__r.MailingPostalCode}" label="{!v.label.l28}" name="cosignerMailingPostalCode" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.MailingPostalCode.length}" pattern="[0-9]{5}" placeholder="{!$Label.c.Required}" required="true"/>
+                                                        <aura:iteration items="{!applicationRelation.Contact__r.RelatedContacts__r}" var="relatedContact">
+                                                            <lightning:select aura:id="f" value="{!relatedContact.Relationship__c}" label="{!v.label.l31}" name="cosignerRelationship" disabled="true">
+                                                                <option value="" text="{!'-- '+$Label.c.Select+' --'}"/>
+                                                                <aura:iteration items="{!v.describe.ContactRelation__c.fields.Relationship__c.picklistValues}" var="picklistEntry">
+                                                                    <aura:iteration items="{!picklistEntry.validForPicklistValues}" var="validForPicklistEntry" indexVar="index">
+                                                                        <aura:if isTrue="{!validForPicklistEntry.value == 'Generic'}">
+                                                                            <option value="{!picklistEntry.value}" text="{!picklistEntry.label}" />
+                                                                        </aura:if>
+                                                                    </aura:iteration>
+                                                                </aura:iteration>
+                                                            </lightning:select>
+                                                        </aura:iteration>
+                                                        <lightning:input aura:id="f" value="{!applicationRelation.Contact__r.DocumentId__c}" label="CURP" name="cosignerDocumentId" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.DocumentId__c.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                                        <lightning:input aura:id="f" value="{!applicationRelation.Contact__r.DocumentId2__c}" label="RFC" name="cosignerDocumentId2" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.DocumentId2__c.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                                        <lightning:helptext content="{!v.describe.Contact.fields.NumberOfDependents__c.inlineHelpText}"/>
+                                                        <lightning:input aura:id="f" value="{!applicationRelation.Contact__r.NumberOfDependents__c}" label="{!v.describe.Contact.fields.NumberOfDependents__c.label}" name="cosignerNumberOfDependents" disabled="{!v.params.readOnly}" max="99" min="0" placeholder="{!$Label.c.Required}" required="true" type="number"/>
+                                                        <lightning:input aura:id="f" value="{!applicationRelation.Contact__r.HomePhone}" label="{!v.describe.Contact.fields.HomePhone.label}" name="cosignerHomePhone" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.HomePhone.length}" messageWhenPatternMismatch="{!v.label.m1}" pattern="[0-9]{10}" placeholder="5510008888" required="true" type="tel"/>
+                                                        <lightning:input aura:id="f" value="{!applicationRelation.Contact__r.MobilePhone}" label="{!v.describe.Contact.fields.MobilePhone.label}" name="cosignerMobilePhone" disabled="true" type="tel"/>
+                                                        <lightning:input aura:id="f" value="{!applicationRelation.Contact__r.Email}" label="{!v.describe.Contact.fields.Email.label}" name="cosignerEmail" disabled="true" type="email"/>
+                                                        <lightning:helptext content="{!v.describe.AcademicHistory__c.fields.Type__c.inlineHelpText}"/>
+                                                        <lightning:select aura:id="f" value="{!applicationRelation.Contact__r.AcademicHistory__r[0].Type__c}" label="{!v.describe.AcademicHistory__c.fields.Type__c.label}" name="cosignerAcademicHistoryType" disabled="{!v.params.readOnly}" required="true">
+                                                            <option value="" text="{!'-- '+$Label.c.Select+' --'}"/>
+                                                            <aura:iteration items="{!v.describe.AcademicHistory__c.fields.Type__c.picklistValues}" var="picklistEntry">
+                                                                <option value="{!picklistEntry.value}" text="{!picklistEntry.label}"/>
+                                                            </aura:iteration>
+                                                        </lightning:select>
+                                                        <lightning:helptext content="{!v.describe.AcademicHistory__c.fields.Degree__c.inlineHelpText}"/>
+                                                        <lightning:input aura:id="f" value="{!applicationRelation.Contact__r.AcademicHistory__r[0].Degree__c}" label="{!v.describe.AcademicHistory__c.fields.Degree__c.label}" name="cosignerAcademicHistoryDegree" disabled="{!v.params.readOnly}" maxlength="{!v.describe.AcademicHistory__c.fields.Degree__c.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                                        <lightning:input aura:id="f" value="{!applicationRelation.Contact__r.AcademicHistory__r[0].School__c}" label="{!v.describe.AcademicHistory__c.fields.School__c.label}" name="cosignerAcademicHistorySchool" disabled="{!v.params.readOnly}" maxlength="{!v.describe.AcademicHistory__c.fields.School__c.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                                        <lightning:helptext content="{!v.describe.AcademicHistory__c.fields.EndDate__c.inlineHelpText}"/>
+                                                        <lightning:input aura:id="f" value="{!applicationRelation.Contact__r.AcademicHistory__r[0].EndDate__c}" label="{!v.describe.AcademicHistory__c.fields.EndDate__c.label}" name="cosignerAcademicHistoryEndDate" disabled="{!v.params.readOnly}" placeholder="{!$Label.c.Required}" required="true" type="date"/>
+                                                        <lightning:helptext content="{!v.describe.Contact.fields.ResidenceOwnership__c.inlineHelpText}"/>
+                                                        <lightning:select aura:id="f" value="{!applicationRelation.Contact__r.ResidenceOwnership__c}" label="{!v.label.l32}" name="cosignerResidenceOwnership" disabled="{!v.params.readOnly}" required="true">
+                                                            <option value="" text="{!'-- '+$Label.c.Select+' --'}"/>
+                                                            <aura:iteration items="{!v.describe.Contact.fields.ResidenceOwnership__c.picklistValues}" var="picklistEntry">
+                                                                <option value="{!picklistEntry.value}" text="{!picklistEntry.label}"/>
+                                                            </aura:iteration>
+                                                        </lightning:select>
+                                                        <lightning:input aura:id="f" value="{!applicationRelation.Contact__r.LengthResidence__c}" label="{!v.label.l33}" name="cosignerLengthResidence" disabled="{!v.params.readOnly}" max="99" min="0" placeholder="{!$Label.c.Required}" required="true" step="any" type="number"/>
+                                                        <lightning:select aura:id="f" value="{!applicationRelation.Contact__r.OccupationMajorGroup__c}" label="{!v.label.l34}" name="cosignerOccupationMajorGroup" disabled="{!v.params.readOnly}" required="true">
+                                                            <option value="" text="{!'-- '+$Label.c.Select+' --'}"/>
+                                                            <aura:iteration items="{!v.describe.Contact.fields.OccupationMajorGroup__c.picklistValues}" var="picklistEntry">
+                                                                <option value="{!picklistEntry.value}" text="{!picklistEntry.label}"/>
+                                                            </aura:iteration>
+                                                        </lightning:select>
+                                                    </div>
+                                                    <div class="section">
+                                                        <h2 class="slds-text-title_caps">{!v.label.s35}</h2>
+                                                        <lightning:helptext content="{!v.describe.JobHistory__c.fields.Company__c.inlineHelpText}"/>
+                                                        <lightning:input aura:id="f" value="{!applicationRelation.Contact__r.JobHistory__r[0].Company__c}" label="{!v.describe.JobHistory__c.fields.Company__c.label}" name="cosignerJobHistoryCompany" disabled="{!v.params.readOnly}" maxlength="{!v.describe.JobHistory__c.fields.Company__c.length}" placeholder="{!$Label.c.Optional}"/>
+                                                        <lightning:helptext content="{!v.describe.JobHistory__c.fields.Sector__c.inlineHelpText}"/>
+                                                        <lightning:input aura:id="f" value="{!applicationRelation.Contact__r.JobHistory__r[0].Sector__c}" label="{!v.describe.JobHistory__c.fields.Sector__c.label}" name="cosignerJobHistorySector" disabled="{!v.params.readOnly}" maxlength="{!v.describe.JobHistory__c.fields.Sector__c.length}" placeholder="{!$Label.c.Optional}"/>
+                                                        <lightning:helptext content="{!v.describe.JobHistory__c.fields.Website__c.inlineHelpText}"/>
+                                                        <lightning:input aura:id="f" value="{!applicationRelation.Contact__r.JobHistory__r[0].Website__c}" label="{!v.describe.JobHistory__c.fields.Website__c.label}" name="cosignerJobHistoryWebsite" disabled="{!v.params.readOnly}" maxlength="{!v.describe.JobHistory__c.fields.Website__c.length}" placeholder="{!$Label.c.Optional}" type="url" onblur="{!c.onUrlBlur}"/>
+                                                        <lightning:helptext content="{!v.describe.JobHistory__c.fields.Position__c.inlineHelpText}"/>
+                                                        <lightning:input aura:id="f" value="{!applicationRelation.Contact__r.JobHistory__r[0].Position__c}" label="{!v.describe.JobHistory__c.fields.Position__c.label}" name="cosignerJobHistoryPosition" disabled="{!v.params.readOnly}" maxlength="{!v.describe.JobHistory__c.fields.Position__c.length}" placeholder="{!$Label.c.Optional}"/>
+                                                        <lightning:helptext content="{!v.describe.JobHistory__c.fields.StartDate__c.inlineHelpText}"/>
+                                                        <lightning:input aura:id="f" value="{!applicationRelation.Contact__r.JobHistory__r[0].StartDate__c}" label="{!v.describe.JobHistory__c.fields.StartDate__c.label}" name="cosignerJobHistoryStartDate" disabled="{!v.params.readOnly}" placeholder="{!$Label.c.Optional}" type="date" onchange="{!c.onPastDateChange}"/>
+                                                        <lightning:radioGroup aura:id="f" value="{!applicationRelation.Contact__r.JobHistory__r[0].IsShareholder__c}" label="{!v.label.l16}" name="cosignerJobHistoryIsShareholder" disabled="{!v.params.readOnly}" options="{!v.describe.JobHistory__c.fields.IsShareholder__c.picklistValues}"/>
+                                                        <lightning:helptext content="{!v.describe.JobHistory__c.fields.Shares__c.inlineHelpText}"/>
+                                                        <lightning:input aura:id="f" value="{!applicationRelation.Contact__r.JobHistory__r[0].Shares__c}" label="{!v.label.l17}" name="cosignerJobHistoryWebsite" disabled="{!v.params.readOnly}" formatter="percent-fixed" max="1e10" min="0" placeholder="{!$Label.c.Optional}" step="any" type="number"/>
+                                                        <lightning:textarea aura:id="f" value="{!applicationRelation.Contact__r.JobHistory__r[0].Associates__c}" label="{!v.label.l18}" name="cosignerJobHistoryAssociates" disabled="{!v.params.readOnly}" maxlength="{!v.describe.JobHistory__c.fields.Associates__c.length}" placeholder="{!$Label.c.Optional}"/>
+                                                    </div>
+                                                    <div class="section">
+                                                        <h2 class="slds-text-title_caps">{!v.label.s27}</h2>
+                                                        <aura:iteration items="{!applicationRelation.Contact__r.ContactRelations__r}" var="contactRelation">
+                                                            <aura:if isTrue="{!contactRelation.Relationship__c == 'Professional Reference'}">
+                                                                <lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.FirstName}" label="{!v.label.l1}" name="cosignerProfessionalReferenceFirstName" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.FirstName.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                                                <lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.LastName}" label="{!v.describe.Contact.fields.LastName.label}" name="cosignerProfessionalReferenceLastName" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.LastName.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                                                <lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.Email}" label="{!v.label.l2}" name="cosignerProfessionalReferenceEmail" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.Email.length}" placeholder="{!$Label.c.Required}" required="true" type="email"/>
+                                                                <lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.MobilePhone}" label="{!v.label.l3}" name="cosignerProfessionalReferenceMobilePhone" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.MobilePhone.length}" messageWhenPatternMismatch="{!v.label.m1}" pattern="[0-9]{10}" placeholder="5510008888" required="true" type="tel"/>
+                                                                <lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.Title}" label="{!v.describe.JobHistory__c.fields.Position__c.label}" name="cosignerProfessionalReferenceTitle" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.Title.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                                            </aura:if>
+                                                        </aura:iteration>
+                                                    </div>
+                                                    <aura:iteration items="{!applicationRelation.Contact__r.ContactRelations__r}" var="contactRelation">
+                                                        <aura:if isTrue="{!contactRelation.Relationship__c == 'Spouse'}">
+                                                            <div class="section">
+                                                                <h2 class="slds-text-title_caps">{!v.label.s28}</h2>
+                                                                <lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.FirstName}" label="{!v.label.l1}" name="cosignerSpouseFirstName" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.FirstName.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                                                <lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.LastName}" label="{!v.describe.Contact.fields.LastName.label}" name="cosignerSpouseLastName" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.LastName.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                                                <lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.Email}" label="{!v.label.l2}" name="cosignerSpouseEmail" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.Email.length}" placeholder="{!$Label.c.Required}" required="true" type="email"/>
+                                                                <lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.Title}" label="{!v.describe.JobHistory__c.fields.Position__c.label}" name="cosignerSpouseTitle" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.Title.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                                                <lightning:select aura:id="f" value="{!contactRelation.RelatedContact__r.OccupationMajorGroup__c}" label="{!v.label.l34}" name="cosignerSpouseGroup" disabled="{!v.params.readOnly}" required="true">
+                                                                    <option value="" text="{!'-- '+$Label.c.Select+' --'}"/>
+                                                                    <aura:iteration items="{!v.describe.Contact.fields.OccupationMajorGroup__c.picklistValues}" var="picklistEntry">
+                                                                        <option value="{!picklistEntry.value}" text="{!picklistEntry.label}"/>
+                                                                    </aura:iteration>
+                                                                </lightning:select>
+                                                            </div>
+                                                            <div class="section">
+                                                                <h2 class="slds-text-title_caps">{!v.label.s29}</h2>
+                                                                <lightning:helptext content="{!v.describe.JobHistory__c.fields.Company__c.inlineHelpText}"/>
+                                                                <lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.JobHistory__r[0].Company__c}" label="{!v.describe.JobHistory__c.fields.Company__c.label}" name="cosignerSpouseJobHistoryCompany" disabled="{!v.params.readOnly}" maxlength="{!v.describe.JobHistory__c.fields.Company__c.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                                                <lightning:helptext content="{!v.describe.JobHistory__c.fields.Sector__c.inlineHelpText}"/>
+                                                                <lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.JobHistory__r[0].Sector__c}" label="{!v.describe.JobHistory__c.fields.Sector__c.label}" name="cosignerSpouseJobHistorySector" disabled="{!v.params.readOnly}" maxlength="{!v.describe.JobHistory__c.fields.Sector__c.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                                                <lightning:helptext content="{!v.describe.JobHistory__c.fields.Website__c.inlineHelpText}"/>
+                                                                <lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.JobHistory__r[0].Website__c}" label="{!v.describe.JobHistory__c.fields.Website__c.label}" name="cosignerSpouseJobHistoryWebsite" disabled="{!v.params.readOnly}" maxlength="{!v.describe.JobHistory__c.fields.Website__c.length}" placeholder="{!$Label.c.Required}" required="true" type="url" onblur="{!c.onUrlBlur}"/>
+                                                                <lightning:helptext content="{!v.describe.JobHistory__c.fields.Position__c.inlineHelpText}"/>
+                                                                <lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.JobHistory__r[0].Position__c}" label="{!v.describe.JobHistory__c.fields.Position__c.label}" name="cosignerSpouseJobHistoryPosition" disabled="{!v.params.readOnly}" maxlength="{!v.describe.JobHistory__c.fields.Position__c.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                                                <lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.JobHistory__r[0].Salary__c}" label="{!v.describe.JobHistory__c.fields.Salary__c.label}" name="cosignerSpouseJobHistorySalary" disabled="{!v.params.readOnly}" formatter="currency" max="1e16" min="0" placeholder="{!$Label.c.Required}" required="true" step="any" type="number"/>
+                                                            </div>
+                                                        </aura:if>
+                                                    </aura:iteration>
+                                                    <div class="section">
+                                                        <h2 class="slds-text-title_caps">{!v.label.s30}
+                                                            <aura:if isTrue="{!!v.params.readOnly}">
+                                                                <lightning:buttonIcon value="Child" alternativeText="{!$Label.c.Create}" iconName="utility:new" iconClass="newIcon" size="large" variant="bare" onclick="{!c.addCosignerContactRelation}"/>
+                                                            </aura:if>
+                                                        </h2>
+                                                        <div class="relatedList">
+                                                            <table>
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th><label class="slds-form-element__label"><abbr class="slds-required" title="{!$Label.c.Required}">*</abbr>{!v.label.l1}</label></th>
+                                                                        <th><label class="slds-form-element__label"><abbr class="slds-required" title="{!$Label.c.Required}">*</abbr>{!v.describe.Contact.fields.LastName.label}</label></th>
+                                                                        <th><label class="slds-form-element__label"><abbr class="slds-required" title="{!$Label.c.Required}">*</abbr>{!v.describe.Contact.fields.Birthdate.label}</label></th>
+                                                                        <th><label class="slds-form-element__label"><abbr class="slds-required" title="{!$Label.c.Required}">*</abbr>{!v.label.l15}</label></th>
+                                                                        <th><label class="slds-form-element__label"><abbr class="slds-required" title="{!$Label.c.Required}">*</abbr>{!v.label.l19}</label></th>
+                                                                        <th><label class="slds-form-element__label"><abbr class="slds-required" title="{!$Label.c.Required}">*</abbr>{!v.label.l20}</label></th>
+                                                                        <aura:if isTrue="{!!v.params.readOnly}">
+                                                                            <th width="5%"><label class="slds-form-element__label">{!$Label.c.Action}</label></th>
+                                                                        </aura:if>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <aura:iteration items="{!applicationRelation.Contact__r.ContactRelations__r}" var="contactRelation" indexVar="index">
+                                                                        <aura:if isTrue="{!contactRelation.Relationship__c == 'Child'}">
+                                                                            <tr>
+                                                                                <td><lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.FirstName}" label=" " name="cosignerChildFirstName" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.FirstName.length}" placeholder="{!$Label.c.Required}" required="true"/></td>
+                                                                                <td><lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.LastName}" label=" " name="cosignerChildLastName" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.LastName.length}" placeholder="{!$Label.c.Required}" required="true"/></td>
+                                                                                <td><lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.Birthdate}" label=" " name="cosignerChildBirthdate" disabled="{!v.params.readOnly}" placeholder="{!$Label.c.Required}" required="true" type="date" onchange="{!c.onPastDateChange}"/></td>
+                                                                                <td><lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.Title}" label=" " name="cosignerChildTitle" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.Title.length}" placeholder="{!$Label.c.Required}" required="true"/></td>
+                                                                                <td><lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.ActualSchoolCompany__c}" label=" " name="cosignerChildActualSchoolCompany" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.ActualSchoolCompany__c.length}" placeholder="{!$Label.c.Required}" required="true"/></td>
+                                                                                <td><lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.Description}" label=" " name="cosignerChildDescription" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.Description.length}" placeholder="{!$Label.c.Required}" required="true" step="any" type="number"/></td>
+                                                                                <aura:if isTrue="{!!v.params.readOnly}">
+                                                                                    <td class="slds-text-align_center"><lightning:buttonIcon value="{!index}" alternativeText="{!$Label.c.Delete}" iconName="utility:delete" iconClass="deleteIcon" variant="bare" onclick="{!c.removeCosignerContactRelation}"/></td>
+                                                                                </aura:if>
+                                                                            </tr>
+                                                                        </aura:if>
+                                                                    </aura:iteration>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <aura:iteration items="{!applicationRelation.Contact__r.ContactRelations__r}" var="contactRelation" indexVar="index">
+                                                        <aura:if isTrue="{!contactRelation.Relationship__c == 'Personal Reference'}">
+                                                            <div class="section">
+                                                                <h2 class="slds-text-title_caps">{!v.label.s31+' '+index}</h2>
+                                                                <lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.FirstName}" label="{!v.label.l1}" name="cosignerPersonalReferenceFirstName" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.FirstName.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                                                <lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.LastName}" label="{!v.describe.Contact.fields.LastName.label}" name="cosignerPersonalReferenceLastName" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.LastName.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                                                <lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.Email}" label="{!v.label.l2}" name="cosignerPersonalReferenceEmail" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.Email.length}" placeholder="{!$Label.c.Required}" required="true" type="email"/>
+                                                                <lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.MobilePhone}" label="{!v.label.l3}" name="cosignerPersonalReferenceMobilePhone" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.MobilePhone.length}" messageWhenPatternMismatch="{!v.label.m1}" pattern="[0-9]{10}" placeholder="5510008888" required="true" type="tel"/>
+                                                                <lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.MailingStreet}" label="{!v.label.l21}" name="cosignerPersonalReferenceMailingStreet" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.MailingStreet.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                                                <lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.MailingNumber__c}" label="{!v.label.l22}" name="cosignerPersonalReferenceMailingNumber" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.MailingNumber__c.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                                                <lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.MailingApartmentNumber__c}" label="{!v.label.l23}" name="cosignerPersonalReferenceMailingApartmentNumber" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.MailingApartmentNumber__c.length}" placeholder="{!$Label.c.Optional}"/>
+                                                                <lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.MailingDistrict__c}" label="{!v.label.l24}" name="cosignerPersonalReferenceMailingDistrict" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.MailingDistrict__c.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                                                <lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.MailingCity}" label="{!v.label.l25}" name="cosignerPersonalReferenceMailingCity" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.MailingCity.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                                                <lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.MailingState}" label="{!v.label.l26}" name="cosignerPersonalReferenceMailingState" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.MailingState.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                                                <lightning:select aura:id="f" value="{!contactRelation.RelatedContact__r.MailingCountry}" label="{!v.label.l27}" name="cosignerPersonalReferenceMailingCountry" disabled="{!v.params.readOnly}" required="true">
+                                                                    <option value="" text="{!'-- '+$Label.c.Select+' --'}"/>
+                                                                    <aura:iteration items="{!v.describe.Contact.fields.CarrierCountry__c.picklistValues}" var="picklistEntry">
+                                                                        <option value="{!picklistEntry.value}" text="{!picklistEntry.label}"/>
+                                                                    </aura:iteration>
+                                                                </lightning:select>
+                                                                <lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.MailingPostalCode}" label="{!v.label.l28}" name="cosignerPersonalReferenceMailingPostalCode" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.MailingPostalCode.length}" pattern="[0-9]{5}" placeholder="{!$Label.c.Required}" required="true"/>
+                                                                <lightning:input aura:id="f" value="{!contactRelation.RelatedContact__r.Description}" label="{!v.describe.ContactRelation__c.fields.Relationship__c.label}" name="cosignerPersonalReferenceDescription" disabled="{!v.params.readOnly}" maxlength="{!v.describe.Contact.fields.Description.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                                            </div>
+                                                        </aura:if>
+                                                    </aura:iteration>
+                                                    <aura:iteration items="['Asset', 'Liability']" var="concept">
+                                                        <div class="section balance">
+                                                            <h2 class="slds-text-title_caps">{!concept == 'Asset' ? v.label.s36 : v.label.s37}</h2>
+                                                            <div class="slds-form-element lightningInput">
+                                                                <label class="slds-form-element__label slds-no-flex">{!v.describe.BalanceDetail__c.fields.Concept__c.label}</label>
+                                                                <label class="slds-form-element__label slds-no-flex">{!v.describe.BalanceDetail__c.fields.Value__c.label} (MXN)</label>
+                                                            </div>
+                                                            <aura:iteration items="{!applicationRelation.Contact__r.Balances__r[0].BalanceDetails__r}" var="balanceDetail" indexVar="index">
+                                                                <aura:if isTrue="{!or(and(concept == 'Asset', and(balanceDetail.Type__c == 'Asset', index &lt; 5)), and(concept == 'Liability', balanceDetail.Type__c == 'Liability'))}">
+                                                                    <lightning:input aura:id="f" value="{!balanceDetail.Value__c}" label="{!balanceDetail.Concept__c}" name="cosignerBalanceDetail" disabled="{!v.params.readOnly}" formatter="currency" max="1e16" min="0" placeholder="{!$Label.c.Required}" required="true" step="any" type="number" onchange="{!c.setTotals}"/>
+                                                                </aura:if>
+                                                            </aura:iteration>
+                                                            <aura:if isTrue="{!concept == 'Asset'}">
+                                                                <div class="slds-form-element lightningInput">
+                                                                    <label class="slds-form-element__label slds-no-flex">{!v.label.l35}</label>
+                                                                    <aura:if isTrue="{!!v.params.readOnly}">
+                                                                        <lightning:buttonIcon value="{!index}" alternativeText="{!$Label.c.Create}" iconName="utility:new" iconClass="newIcon" size="large" variant="bare" onclick="{!c.addCosignerProperty}"/>
+                                                                    </aura:if>
+                                                                </div>
+                                                                <aura:iteration items="{!applicationRelation.Contact__r.Balances__r[0].BalanceDetails__r}" var="balanceDetail" indexVar="index">
+                                                                    <aura:if isTrue="{!and(balanceDetail.Type__c == 'Asset', index > 4)}">
+                                                                        <aura:if isTrue="{!!v.params.readOnly}">
+                                                                            <lightning:buttonIcon value="{!index}" alternativeText="{!$Label.c.Delete}" iconName="utility:delete" iconClass="deleteIcon" variant="bare" onclick="{!c.removeCosignerProperty}"/>
+                                                                        </aura:if>
+                                                                        <lightning:input aura:id="f" value="{!balanceDetail.Concept__c}" label="{!v.label.l36}" name="cosignerPropertyConcept" disabled="{!v.params.readOnly}" maxlength="{!v.describe.BalanceDetail__c.fields.Concept__c.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                                                        <lightning:input aura:id="f" value="{!balanceDetail.Location__c}" label="{!v.describe.BalanceDetail__c.fields.Location__c.label}" name="cosignerPropertyLocation" disabled="{!v.params.readOnly}" maxlength="{!v.describe.BalanceDetail__c.fields.Location__c.length}" placeholder="{!$Label.c.Required}" required="true"/>
+                                                                        <lightning:input aura:id="f" value="{!balanceDetail.Value__c}" label="{!v.describe.BalanceDetail__c.fields.Value__c.label}" name="cosignerPropertyValue" disabled="{!v.params.readOnly}" formatter="currency" max="1e16" min="0" placeholder="{!$Label.c.Required}" required="true" step="any" type="number" onchange="{!c.setTotals}"/>
+                                                                    </aura:if>
+                                                                </aura:iteration>
+                                                            </aura:if>
+                                                            <lightning:input aura:id="f" value="{!concept == 'Asset' ? v.label.Asset : v.label.Liability}" label="{!$Label.c.Total}" name="cosignerTotalAsset" disabled="true" formatter="currency" type="number"/>
+                                                        </div>
+                                                    </aura:iteration>
+                                                    <div class="acceptPrivacyStatement">
+                                                        <lightning:input checked="{!applicationRelation.Contact__r.PrivacyStatementCheck__c}" label=" " name="cosignerPrivacyStatementCheck" disabled="{!v.params.readOnly}" type="checkbox"/>
+                                                        <label class="slds-form-element__label">{!v.label.p1}<a onclick="{!c.togglePrivacyStatement}">{!v.label.p2}</a>.</label>
+                                                    </div>
+                                                    <aura:if isTrue="{!!v.params.readOnly}">
+                                                        <div class="slds-text-align_center">
+                                                            <lightning:button label="{!$Label.c.Save}" onclick="{!c.save}"/>
+                                                            <lightning:button label="{!$Label.c.Submit}" disabled="{!!applicationRelation.Contact__r.PrivacyStatementCheck__c}" variant="brand" onclick="{!c.submitCosigner}"/>
+                                                        </div>
+                                                    </aura:if>
+                                                    <aura:set attribute="else">
+                                                        <aura:if isTrue="{!!v.params.isCosignerSubmitted}">
+                                                            <p class="fullSize"><lightning:formattedRichText value="{!format(v.label.te1, $Label.c.Required)}"/></p>
+                                                            <div class="section fullSize">
+                                                                <h2 class="slds-text-title_caps">{!v.label.s33}</h2>
+                                                                <c:ApplicationDocuments application="{!v.application}" contactId="{!v.contactId}" describe="{!v.describe}" params="{!v.params}" role="{!applicationRelation.Type__c}"/>
+                                                            </div>
+                                                            <aura:if isTrue="{!or(v.application.Status__c == 'APPROVED - APPROVED', v.application.Status__c == 'APPROVED - DOCUMENT CHECK')}">
+                                                                <div class="slds-text-align_center">
+                                                                    <lightning:button aura:id="submit" label="{!$Label.c.Submit}" value="true" variant="brand" onclick="{!c.submitCosigner}"/>
+                                                                </div>
+                                                            </aura:if>
+                                                            <aura:set attribute="else">
+                                                                <div class="fullSize slds-text-align_center">
+                                                                    <h1 class="slds-text-heading_large slds-m-bottom_medium">{!v.label.tl1}</h1>
+                                                                    <p class="slds-text-heading_medium"><lightning:formattedText value="{!v.label.tl2}" linkify="true"/></p>
+                                                                </div>
+                                                            </aura:set>
+                                                        </aura:if>
+                                                    </aura:set>
+                                                </aura:if>
+                                            </aura:set>
+                                        </aura:if>
+                                    </aura:if>
+                                </aura:if>
+                            </aura:iteration>
+                        </aura:set>
+
+                    </aura:if>
+
+                </aura:set>
+
+            </aura:if>
+        </section>
+
+        <c:AppFooter params="{!v.params}"/>
+
+    </aura:if>
+
+
+    <!--SI EXISTE REGISTRO EN LENDING PRODUCT-->
+    <!-- <aura:if isTrue="{!v.application.LendingProduct__c}"> -->
+
+        <!--AMORTIZACION-->
+        <section aura:id="amortization" role="dialog" aria-modal="true" class="slds-fade-in-open slds-modal slds-hide">
+            <div class="slds-backdrop slds-backdrop_open"></div>
+            <div id="amortization" class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <lightning:buttonIcon alternativeText="{!$Label.c.Close}" iconName="utility:close" class="slds-button_icon-inverse slds-modal__close" size="large" variant="bare" onclick="{!c.toggleAmortization}"/>
+                    <h2 class="slds-text-heading_medium">{!v.describe.loan__Repayment_Schedule__c.labelPlural}
+                        <lightning:helptext content="{!v.label.h11}"/>
+                    </h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <iframe src="{!$Label.c.MagentrixPortalUrl+'/aspx/TEM_Calculator?tax=0.16&amp;graceOffset=2&amp;interest='+v.application.InterestRate__c+'&amp;term='+v.application.Term__c+(v.application.OriginalLoanAmount__c ? '&amp;loanAmount='+v.application.OriginalLoanAmount__c : '')+(v.application.DurationProgram__c ? '&amp;graceTerm='+v.application.DurationProgram__c : '')+(v.application.NumberOfDisbursements__c ? '&amp;disbursements='+v.application.NumberOfDisbursements__c : '')+(v.application.ExpectedStartDate__c ? '&amp;dateInput='+v.application.ExpectedStartDate__c : '')+(v.application.InsuranceFee__c ? '&amp;insuranceFee='+v.application.InsuranceFee__c*(1-0.16) : '')}" width="100%" height="600px"/>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning:button label="{!$Label.c.Close}" onclick="{!c.toggleAmortization}"/>
+                </footer>
+            </div>
+        </section>
+
+        <!--PRIVACIDAD-->
+        <section aura:id="privacyStatement" role="dialog" aria-modal="true" class="slds-fade-in-open slds-modal slds-hide">
+                <div class="slds-backdrop slds-backdrop_open"></div>
+                <div id="privacyStatement" class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon alternativeText="{!$Label.c.Close}" iconName="utility:close" class="slds-button_icon-inverse slds-modal__close" size="large" variant="bare" onclick="{!c.togglePrivacyStatement}"/>
+                        <h2 class="slds-text-heading_medium">{!v.label.p3}</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <lightning:formattedRichText value="{!v.label.p4}"/>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning:button label="{!$Label.c.Close}" onclick="{!c.togglePrivacyStatement}"/>
+                    </footer>
+                </div>
+            </section>
+
+
+    <!-- </aura:if> -->
+    
+    
+</aura:component>
