@@ -1,0 +1,160 @@
+/**
+ * Description: ApplicationFormTalentoEnMarcha CSS stylesheet.
+ * Author: Oscar Becerra
+ * Company: Quotanda
+ * Email: oscar@quotanda.com
+ * Created Date: 2017-07-17
+**/
+.THIS.main { background: #f2f2f2; min-height: calc(100% - 240px); padding: 20px 10px; }
+.THIS.main > *:not(.fullSize) { display: block; margin: auto; max-width: 700px; }
+.THIS.main > *:not(:last-child) { margin-bottom: 20px; }
+.THIS .runtime_sales_pathassistantPathAssistant .pa-card { background: 0; border: 0; margin: 0; padding: 0; }
+.THIS .runtime_sales_pathassistantPathAssistant .header { padding: 0 !important; }
+.THIS .runtime_sales_pathassistantPathAssistant .tabset-border { height: 33px; }
+.THIS .runtime_sales_pathassistantPathAssistant ul { border-radius: 2em !important; }
+.THIS .runtime_sales_pathassistantPathAssistant li { align-items: center; display: none; height: 33px; }
+.THIS .runtime_sales_pathassistantPathAssistant a { margin: auto; overflow: hidden; text-decoration: 0 !important; text-overflow: ellipsis; }
+.THIS .runtime_sales_pathassistantPathAssistant .slds-path__scroll-controls { padding: 0 3px !important; }
+.THIS .runtime_sales_pathassistantPathAssistant button { height: 30px; margin-top: 1px; padding: 0 !important; width: 25px; }
+.THIS .runtime_sales_pathassistantPathAssistant .assistiveText { display: none; }
+.THIS .runtime_sales_pathassistantPathAssistant .slds-path__action { margin: 0; }
+.THIS .runtime_sales_pathassistantPathAssistant .stepLabel  { display: none; }
+.THIS .runtime_sales_pathassistantPathAssistant li:before { background-image: inherit !important; border: 0; }
+.THIS .runtime_sales_pathassistantPathAssistant li:after { background-image: inherit !important; border: 0; }
+.THIS .runtime_sales_pathassistantPathAssistant li.current:before { background: #fff; }
+.THIS .runtime_sales_pathassistantPathAssistant li.current:after { background: #fff; }
+.THIS .runtime_sales_pathassistantPathAssistant li.ahead:before { background: #ecebea; }
+.THIS .runtime_sales_pathassistantPathAssistant li.ahead:after { background: #ecebea; }
+.THIS .runtime_sales_pathassistantPathAssistant li[data-name='NEW - ENTERED'] { display: flex; }
+.THIS .runtime_sales_pathassistantPathAssistant li[data-name='APPROVED - APPROVED'] { display: flex; }
+.THIS .studentPicklistPath .runtime_sales_pathassistantPathAssistant li[data-name='NEW - PRE APPROVED'] { display: flex; }
+.THIS .studentPicklistPath .runtime_sales_pathassistantPathAssistant li[data-name='NEW - IN REVIEW'] { display: flex; }
+.THIS .studentPicklistPath .runtime_sales_pathassistantPathAssistant li[data-name='APPROVED - DOCUMENT CHECK'] { display: flex; }
+.THIS .studentPicklistPath .runtime_sales_pathassistantPathAssistant li[data-name='APPROVED - CONTRACT SIGNATURE REQUEST'] { display: flex; }
+.THIS .studentPicklistPath .runtime_sales_pathassistantPathAssistant li[data-name='APPROVED - CONVERTED TO CONTRACT'] { display: flex; }
+.THIS > .section { background: #fff; border: 2px solid #999; border-radius: 8px; overflow: hidden; position: relative; }
+.THIS > .section > h2 { background: #e5e5e5; padding: 9px 6px; position: relative; }
+.THIS > .section > h2 > button { position: absolute; right: 4px; top: 4px; }
+.THIS > .section > h2 > button > lightning-primitive-icon > svg > use { fill: green; }
+.THIS > .section > h2 > lightning-helptext { margin-left: 5px; position: absolute; top: 5px; }
+.THIS > .section > h2 > lightning-helptext > .slds-form-element__icon > button > lightning-primitive-icon > svg > use { fill: orange; }
+.THIS > .section > lightning-helptext { position: absolute; }
+.THIS > .section > lightning-helptext > .slds-form-element__icon > button > lightning-primitive-icon > svg > use { fill: orange; }
+.THIS > .section > div.slds-form-element { min-height: 33px; padding: 4px 6px; }
+.THIS > .section > div.slds-form-element > .slds-form-element__label { margin: 0; padding: 2px 16px 2px 0; }
+.THIS > .section > div.slds-form-element > .slds-form-element__control > .slds-select_container > select { background: transparent; height: 33px; min-height: 0; padding: 0 20px 0 6px; }
+.THIS > .section > div.slds-form-element > .slds-form-element__control > .slds-select_container > select:disabled { border-color: transparent; }
+.THIS > .section > lightning-input { min-height: 33px; padding: 4px 6px; }
+.THIS > .section > lightning-input > .slds-form-element__label { margin: 0; padding: 2px 16px 2px 0; }
+.THIS > .section > lightning-input > .slds-form-element__control > input { background: transparent; height: 33px; min-height: 0; padding: 0 6px; }
+.THIS > .section > lightning-input > .slds-form-element__control > input:disabled { border-color: transparent; }
+.THIS > .section > lightning-input > .slds-form-element__control > .slds-checkbox { padding: 2px 16px 2px 0; }
+.THIS > .section > lightning-input > .slds-form-element__control > .slds-checkbox > .slds-checkbox__label { margin: 0; }
+.THIS > .section > lightning-input > .slds-form-element__control > .slds-checkbox > .slds-checkbox__label > .slds-form-element__label { margin: 0; padding: 0; }
+.THIS > .section > lightning-input > lightning-datepicker > .slds-form-element > .slds-form-element__label { margin: 0; padding: 2px 16px 2px 0; }
+.THIS > .section > lightning-input > lightning-datepicker > .slds-form-element > .slds-form-element__control > input { background: transparent; height: 33px; min-height: 0; padding: 0 20px 0 6px; }
+.THIS > .section > lightning-input > lightning-datepicker > .slds-form-element > .slds-form-element__control > input:disabled { border-color: transparent; }
+.THIS > .section > lightning-input > lightning-datepicker > .slds-form-element > .slds-form-element__control > lightning-button-icon { right: 5px; margin-top: -0.72em; }
+.THIS > .section > lightning-radio-group { min-height: 33px; padding: 4px 6px; }
+.THIS > .section > lightning-radio-group > fieldset > .slds-form-element__label { font-weight: normal; margin: 0; padding: 2px 16px 2px 0; }
+.THIS > .section > lightning-radio-group > fieldset > .slds-form-element__control > .slds-radio > .slds-radio__label { margin: 0; }
+.THIS > .section > lightning-textarea { padding: 4px 6px; }
+.THIS > .section > lightning-textarea > .slds-form-element__label { display: block; margin: 0; padding: 2px 16px 2px 0; }
+.THIS > .section > lightning-textarea > .slds-form-element__control > textarea { background: transparent; display: block; margin-bottom: 2px; padding: 2px 0; }
+.THIS > .section > lightning-textarea > .slds-form-element__control > textarea:disabled { border-color: transparent; }
+.THIS > .section > .relatedList { overflow-x: auto; }
+.THIS > .section > .relatedList > table > thead { background: #eee; }
+.THIS > .section > .relatedList > table > thead > tr { border-top: 1px solid #ddd; height:33px; vertical-align: top; }
+.THIS > .section > .relatedList > table > thead > tr > th { padding: 6px; }
+.THIS > .section > .relatedList > table > thead > tr > th > label { margin: 0; padding: 0; }
+.THIS > .section > .relatedList > table > tbody > tr { border-top: 1px solid #ddd; }
+.THIS > .section > .relatedList > table > tbody > tr:nth-child(odd) { background: #fff; }
+.THIS > .section > .relatedList > table > tbody > tr:nth-child(even) { background: #eaf1f7; }
+.THIS > .section > .relatedList > table > tbody > tr > td { padding: 4px 2px 4px 0; vertical-align: top; }
+.THIS > .section > .relatedList > table > tbody > tr > td > button > lightning-primitive-icon > svg > use { fill: red; }
+.THIS > .section > .relatedList > table > tbody > tr > td > div.slds-form-element > .slds-form-element__label { display: none; }
+.THIS > .section > .relatedList > table > tbody > tr > td > div.slds-form-element > .slds-form-element__control > .slds-select_container:before { display: none; }
+.THIS > .section > .relatedList > table > tbody > tr > td > div.slds-form-element > .slds-form-element__control > .slds-select_container > select { background: transparent; height: 24px; min-height: 0; padding: 0 20px 0 6px; }
+.THIS > .section > .relatedList > table > tbody > tr > td > div.slds-form-element:not(.slds-has-error) > .slds-form-element__control > .slds-select_container > select { border-color: transparent; }
+.THIS > .section > .relatedList > table > tbody > tr > td > div.slds-form-element > .slds-form-element__control > .slds-select_container:after { position: absolute; top: 10px; }
+.THIS > .section > .relatedList > table > tbody > tr > td > lightning-input > .slds-form-element__label { display: none; }
+.THIS > .section > .relatedList > table > tbody > tr > td > lightning-input > .slds-form-element__control > input { background: transparent; height: 24px; min-height: 0; padding: 0 6px; }
+.THIS > .section > .relatedList > table > tbody > tr > td > lightning-input:not(.slds-has-error) > .slds-form-element__control > input { border-color: transparent; }
+.THIS > .section > .relatedList > table > tbody > tr > td > lightning-input > lightning-datepicker > .slds-form-element > .slds-form-element__label { display: none; }
+.THIS > .section > .relatedList > table > tbody > tr > td > lightning-input > lightning-datepicker > .slds-form-element > .slds-form-element__control > input { background: transparent; height: 24px; min-height: 0; padding: 0 20px 0 6px; }
+.THIS > .section > .relatedList > table > tbody > tr > td > lightning-input > lightning-datepicker > .slds-form-element > .slds-form-element__control > lightning-button-icon { right: 5px; margin-top: -0.72em; }
+.THIS > .section > .relatedList > table > tbody > tr > td > lightning-input > lightning-datepicker:not(.slds-has-error) > .slds-form-element > .slds-form-element__control > input { border-color: transparent; }
+.THIS > .section.estimationDetail > .relatedList > table > tbody > tr > td > div.slds-form-element > .slds-form-element__control > .slds-select_container:after { display: none; }
+.THIS > .section.balance > div.slds-form-element > label { display: inline-block; font-weight: bold; padding: 2px 0; width: 50%; }
+.THIS > .section.balance > div.slds-form-element > label:last-child { text-align: right; }
+.THIS > .section.balance > div.slds-form-element:nth-of-type(2) > label { text-align: center; width: 100%; }
+.THIS > .section.balance > div.slds-form-element > button { position: absolute; right: 4px; top: 3px; }
+.THIS > .section.balance > div.slds-form-element > button > lightning-primitive-icon > svg > use { fill: green; }
+.THIS > .section.balance > lightning-input > .slds-form-element__control > input:not([maxlength]) { text-align: right; }
+.THIS > .section.balance > lightning-input:last-of-type > .slds-form-element__label { font-weight: bold; }
+.THIS > .section.balance > lightning-input:last-of-type > .slds-form-element__control > input { font-weight: bold; }
+.THIS > .section.balance > button { padding: 8px 10px; position: absolute; right: 0; z-index: 1; }
+.THIS > .section.balance > button > lightning-primitive-icon > svg > use { fill: red; }
+.THIS > .acceptPrivacyStatement > lightning-input { display: inline-block; }
+.THIS > .acceptPrivacyStatement > lightning-input > .slds-form-element__control > .slds-checkbox > .slds-checkbox__label { margin: 0; }
+.THIS > .acceptPrivacyStatement > lightning-input > .slds-form-element__control > .slds-checkbox > .slds-checkbox__label > .slds-form-element__label { margin-right: 4px; }
+.THIS > .acceptPrivacyStatement > label { display: inline; }
+.THIS > .acceptPrivacyStatement > label > a { color: #6b6d70; font-weight: bold; text-decoration: underline; }
+.THIS > .slds-modal__container { margin: auto; max-width: calc(100% - 22px); z-index: 10000; }
+.THIS > .slds-modal__container#amortization { width: 1200px; }
+.THIS > .slds-modal__container#amortization > .slds-modal__header > h2 > lightning-helptext { margin-left: 5px; position: absolute; top: 10px; }
+.THIS > .slds-modal__container#amortization > .slds-modal__header > h2 > lightning-helptext > .slds-form-element__icon > button > lightning-primitive-icon > svg > use { fill: orange; }
+.THIS > .slds-modal__container#privacyStatement { width: 700px; }
+.THIS > .slds-modal__container#privacyStatement > .slds-modal__content > lightning-formatted-rich-text > span > * { display: block; margin-bottom: 10px; }
+.THIS > .slds-modal__container#privacyStatement > .slds-modal__content > lightning-formatted-rich-text > span > h2 { text-align: center; }
+.THIS > .slds-modal__container#privacyStatement > .slds-modal__content > lightning-formatted-rich-text > span > h3 { font-size: 14px; font-weight: bold; }
+.THIS ::placeholder { color: #ddd; font-style: italic; }
+.THIS br { line-height: 2; }
+.THIS button:hover { filter: brightness(90%); }
+.THIS input:not(:disabled) + label > span:first-child:hover { box-shadow: #0070d2 0px 0px 3px 0px; }
+.THIS input:not(:disabled):hover { box-shadow: #0070d2 0px 0px 3px 0px; }
+.THIS select:not(:disabled):hover { box-shadow: #0070d2 0px 0px 3px 0px; }
+.THIS textarea:not(:disabled):hover { box-shadow: #0070d2 0px 0px 3px 0px; }
+@media(min-width: 700px) {
+    .THIS > .section > lightning-helptext { left: calc(50% - 16px); margin-top: 3px; }
+    .THIS > .section > .slds-form-element { border-top: 1px solid #ddd; }
+    .THIS > .section > div.slds-form-element > .slds-form-element__label { display: inline-block; width: 50%; }
+    .THIS > .section > div.slds-form-element > .slds-form-element__control { display: inline-block; width: 50%; }
+    .THIS > .section > div.slds-form-element > .slds-form-element__control > .slds-select_container:before { display: none; }
+    .THIS > .section > div.slds-form-element > .slds-form-element__control > .slds-select_container > select { height: 24px; }
+    .THIS > .section > div.slds-form-element > .slds-form-element__control > .slds-select_container:after { top: calc(50% - 2px); }
+    .THIS > .section > div.slds-form-element > .slds-form-element__help { text-align: right; }
+    .THIS > .section > div.slds-form-element:not(.slds-has-error) > .slds-form-element__control > .slds-select_container > select { border-color: transparent; }
+    .THIS > .section > lightning-input > .slds-form-element__label { display: inline-block; width: 50%; }
+    .THIS > .section > lightning-input > .slds-form-element__label + .slds-form-element__control { display: inline-block; width: 50%; }
+    .THIS > .section > lightning-input > .slds-form-element__control > input { height: 24px; }
+    .THIS > .section > lightning-input:not(.slds-has-error) > .slds-form-element__control > input { border-color: transparent; }
+    .THIS > .section > lightning-input > .slds-form-element__control > .slds-checkbox { display: inline-block; width: 50%; }
+    .THIS > .section > lightning-input > .slds-form-element__control > .slds-checkbox > .slds-checkbox__label > .slds-checkbox_faux { margin: 2px 0; position: absolute; right: -16px; }
+    .THIS > .section > lightning-input > .slds-form-element__control > .slds-checkbox > .slds-checkbox__label > .slds-form-element__label { font-size: 12px; }
+    .THIS > .section > lightning-input > .slds-form-element__help { text-align: right; }
+    .THIS > .section > lightning-input > lightning-datepicker > .slds-form-element > .slds-form-element__label { display: inline-block; width: 50%; }
+    .THIS > .section > lightning-input > lightning-datepicker > .slds-form-element > .slds-form-element__control { display: inline-block; width: 50%; }
+    .THIS > .section > lightning-input > lightning-datepicker > .slds-form-element > .slds-form-element__control > input { height: 24px; }
+    .THIS > .section > lightning-input > lightning-datepicker:not(.slds-has-error) > .slds-form-element > .slds-form-element__control > input { border-color: transparent; }
+    .THIS > .section > lightning-input > lightning-datepicker > .slds-form-element__help { text-align: right; }
+    .THIS > .section > lightning-radio-group > fieldset > .slds-form-element__label { display: inline-block; width: 50%; }
+    .THIS > .section > lightning-radio-group > fieldset > .slds-form-element__control { display: inline-block; width: 50%; }
+    .THIS > .section > lightning-radio-group > fieldset > .slds-form-element__help { text-align: right; }
+    .THIS > .section > lightning-textarea > .slds-form-element__help { text-align: right; }
+    .THIS > .section > .relatedList > table > tbody > tr > td > lightning-input > .slds-form-element__help { text-align: right; }
+    .THIS > .section > .relatedList > table > tbody > tr > td > lightning-input > lightning-datepicker > .slds-form-element__help { text-align: right; }
+    .THIS > .section.question > lightning-radio-group > fieldset > .slds-form-element__label { width: calc(100% - 130px); }
+    .THIS > .section.question > lightning-radio-group > fieldset > .slds-form-element__control { width: 130px; }
+    .THIS > .section.question > lightning-radio-group > fieldset > .slds-form-element__control > .slds-radio { display: inline; }
+}
+@media(max-width: 700px) {
+    .THIS > .section > lightning-helptext { right: 9px; }
+    .THIS > .section > div.slds-form-element > .slds-form-element__label { display: block; }
+    .THIS > .section > lightning-input > .slds-form-element__label { display: block; }
+    .THIS > .section > lightning-input > .slds-form-element__control > .slds-checkbox { display: block; }
+    .THIS > .section > lightning-input > .slds-form-element__control > .slds-checkbox > .slds-checkbox__label > .slds-checkbox_faux { margin: 0 4px 0 0; }
+    .THIS > .section > lightning-input > .slds-form-element__control > .slds-checkbox > .slds-checkbox__label > .slds-form-element__label { font-size: 14px; }
+    .THIS > .section > lightning-input > lightning-datepicker > .slds-form-element > .slds-form-element__label { display: block; }
+    .THIS > .section > lightning-radio-group > fieldset > .slds-form-element__label { display: block; }
+}
